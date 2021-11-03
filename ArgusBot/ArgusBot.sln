@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot", "ArgusBot.csproj", "{12D93CED-0DC4-496D-A1AB-EF65AEE00575}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgusBot.DAL", "..\ArgusBot.DAL\ArgusBot.DAL.csproj", "{F5548A2E-5F59-4DB0-94D1-E8032DC2DAED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot.DAL", "..\ArgusBot.DAL\ArgusBot.DAL.csproj", "{F5548A2E-5F59-4DB0-94D1-E8032DC2DAED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgusBot.BL", "..\ArgusBot.BL\ArgusBot.BL.csproj", "{1D2731D1-535E-4E6A-B2C0-1C4808BF4A22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot.BLL", "..\ArgusBot.BL\ArgusBot.BLL.csproj", "{1D2731D1-535E-4E6A-B2C0-1C4808BF4A22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
