@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ArgusBot.Models
+namespace ArgusBot.DAL.Models
 {
     public class User
     {

@@ -1,11 +1,13 @@
-﻿using ArgusBot.Models;
+﻿using ArgusBot.DAL.Models;
 using System;
 
 namespace ArgusBot.DAL.Repositories.Interfaces
 {
-    interface IUserRepository
+    public interface IUserRepository
     {
-        User GetUser(Guid id);
+        User GetUserById(Guid id);
+
+        User GetUserByLogin(string login);
 
         User GetUserByTelegramAccount(string telegramId);
 

@@ -1,6 +1,6 @@
-﻿using ArgusBot.DAL.Repositories.Interfaces;
+﻿using ArgusBot.DAL.Models;
+using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
-using ArgusBot.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -29,12 +29,12 @@ namespace ArgusBot.DAL.Repositories.Implementation
             Save();
         }
 
-        public User GetUser(Guid id)
+        public User GetUserById(Guid id)
         {
             return db.Users.First(u => u.UserGuid == id);
         }
 
-        public User GetUser(string login)
+        public User GetUserByLogin(string login)
         {
             return db.Users.First(u => u.NormalizedLogin == login.ToLower());
         }
