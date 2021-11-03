@@ -27,9 +27,10 @@ namespace ArgusBot.Services.Implementations
                 await _client.SendTextMessageAsync(update.Message.Chat.Id, update.Message.Text);
             }   
         }
-        private async Task HandleError(ITelegramBotClient client, Exception exception, CancellationToken cancelToken)
+        private Task HandleError(ITelegramBotClient client, Exception exception, CancellationToken cancelToken)
         {
             _logger.LogError(exception.Message);
+            return Task.CompletedTask;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
