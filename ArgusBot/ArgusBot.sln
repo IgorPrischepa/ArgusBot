@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot", "ArgusBot.csproj", "{B28C84B7-464E-42C4-AB68-C0531C635A26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgusBot.BL", "..\ArgusBot.BL\ArgusBot.BL.csproj", "{8DC7EBBC-E21E-4874-B111-5596B5D273E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B28C84B7-464E-42C4-AB68-C0531C635A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B28C84B7-464E-42C4-AB68-C0531C635A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B28C84B7-464E-42C4-AB68-C0531C635A26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DC7EBBC-E21E-4874-B111-5596B5D273E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DC7EBBC-E21E-4874-B111-5596B5D273E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DC7EBBC-E21E-4874-B111-5596B5D273E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DC7EBBC-E21E-4874-B111-5596B5D273E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
