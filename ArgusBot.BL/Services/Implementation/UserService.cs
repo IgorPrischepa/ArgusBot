@@ -25,15 +25,31 @@ namespace ArgusBot.BLL.Services.Implementation
 
         public bool Authorize(string login, string password)
         {
-            throw new NotImplementedException();
+            var user = usersRepository.GetUserByLogin(login);
+            var inputPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
+            if (user.Password != inputPassword)
+            {
+                return false;
+            }
+
+            return false;
         }
 
         public bool AuthorizeByTelegramAccount(string telegramId)
         {
-            var user = usersRepository.GetUserByTelegramAccount(telegramId);
-            
-            
+            try
+            {
+                var user = usersRepository.GetUserByTelegramAccount(telegramId);
 
+            }
+            catch (ArgumentNullException ex)
+            {
+                if (CreateNewUserByTelegramAccount(telegramId))
+                {
+                    return true;
+                }
+            }
             return true;
         }
 
