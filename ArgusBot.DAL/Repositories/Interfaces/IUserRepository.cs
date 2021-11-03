@@ -7,6 +7,8 @@ namespace ArgusBot.DAL.Repositories.Interfaces
     {
         User GetUser(Guid id);
 
+        User GetUserByTelegramAccount(string telegramId);
+
         void Create(User user);
 
         void Update(User user);
