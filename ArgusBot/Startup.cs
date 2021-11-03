@@ -1,17 +1,15 @@
 using ArgusBot.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ArgusBot.BLL.Services.Interfaces;
+using ArgusBot.BLL.Services.Implementation;
+using ArgusBot.DAL.Repositories.Interfaces;
+using ArgusBot.DAL.Repositories.Implementation;
 
 namespace ArgusBot
 {
@@ -36,6 +34,10 @@ namespace ArgusBot
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
             services.AddControllersWithViews();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISignInService, SignInService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

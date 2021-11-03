@@ -2,7 +2,7 @@
 
 namespace ArgusBot.BLL.DTO
 {
-    class Profile
+    public class Profile
     {
         public Guid UserGuid { get; set; }
 

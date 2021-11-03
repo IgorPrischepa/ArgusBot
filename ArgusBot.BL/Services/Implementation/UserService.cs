@@ -3,23 +3,18 @@ using ArgusBot.BLL.Services.Interfaces;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.DAL.Models;
 using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ArgusBot.BLL.Services.Implementation
 {
-    class UserService : IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository usersRepository;
-        private readonly IHttpContextAccessor context;
 
-        public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
+        public UserService(IUserRepository userRepository)
         {
             usersRepository = userRepository;
-            context = httpContextAccessor;
         }
 
         public bool AddTelegramToAccount(Guid userGuid, string telegramId)
@@ -27,45 +22,6 @@ namespace ArgusBot.BLL.Services.Implementation
             var user = usersRepository.GetUserById(userGuid);
             user.TelegramId = telegramId;
             usersRepository.Update(user);
-            return true;
-        }
-
-        public bool Authorize(string login, string password)
-        {
-            var user = usersRepository.GetUserByLogin(login);
-            var inputPassword = BCrypt.Net.BCrypt.HashPassword(password);
-
-            if (user.Password != inputPassword)
-            {
-                return false;
-            }
-
-            return false;
-        }
-
-        public bool AuthorizeByTelegramAccount(string telegramId)
-        {
-            try
-            {
-                var user = usersRepository.GetUserByTelegramAccount(telegramId);
-
-            }
-            catch (ArgumentNullException ex)
-            {
-                if (CreateNewUserByTelegramAccount(telegramId))
-                {
-                    var user = usersRepository.GetUserByTelegramAccount(telegramId);
-
-                    CreateAuthCoolkieAsync(new Profile
-                    {
-                        UserGuid = user.UserGuid,
-                        Login = user.Login,
-                        TelegramId = user.TelegramId
-                    });
-
-                    return true;
-                }
-            }
             return true;
         }
 
@@ -103,7 +59,7 @@ namespace ArgusBot.BLL.Services.Implementation
             return true;
         }
 
-        public Profile GetUser(string login)
+        public Profile GetUserByLogin(string login)
         {
             var user = usersRepository.GetUserByLogin(login);
 
@@ -115,7 +71,7 @@ namespace ArgusBot.BLL.Services.Implementation
             };
         }
 
-        public Profile GetUser(Guid login)
+        public Profile GetUserByGuid(Guid login)
         {
             var user = usersRepository.GetUserById(login);
 
@@ -127,7 +83,7 @@ namespace ArgusBot.BLL.Services.Implementation
             };
         }
 
-        public Profile GetUserbyTelegramAccount(string telegramId)
+        public Profile GetUserByTelegramAccount(string telegramId)
         {
             var user = usersRepository.GetUserByTelegramAccount(telegramId);
 
@@ -137,44 +93,6 @@ namespace ArgusBot.BLL.Services.Implementation
                 Login = user.Login,
                 TelegramId = user.TelegramId
             };
-        }
-
-        public async void Logout()
-        {
-            await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-
-        private async void CreateAuthCoolkieAsync(Profile profile)
-        {
-            var claims = new List<Claim>
-             {
-                new Claim(ClaimTypes.Name, profile.Login)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var authProperties = new AuthenticationProperties
-            {
-                AllowRefresh = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-
-                //IsPersistent = true,
-                // Whether the authentication session is persisted across 
-                // multiple requests. When used with cookies, controls
-                // whether the cookie's lifetime is absolute (matching the
-                // lifetime of the authentication ticket) or session-based.
-
-                //IssuedUtc = <DateTimeOffset>,
-                // The time at which the authentication ticket was issued.
-
-                RedirectUri = "/Home"
-            };
-
-            await context.HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
         }
     }
 }

@@ -5,17 +5,17 @@ namespace ArgusBot.DAL.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        User GetUserById(Guid id);
+        public User GetUserById(Guid id);
 
-        User GetUserByLogin(string login);
+        public User GetUserByLogin(string login);
 
-        User GetUserByTelegramAccount(string telegramId);
+        public User GetUserByTelegramAccount(string telegramId);
 
-        void Create(User user);
+        public void Create(User user);
 
-        void Update(User user);
+        public void Update(User user);
 
-        void Delete(Guid id);
+        public void Delete(Guid id);
 
         void Save();
     }

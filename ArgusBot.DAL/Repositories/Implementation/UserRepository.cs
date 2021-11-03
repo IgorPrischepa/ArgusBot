@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ArgusBot.DAL.Repositories.Implementation
 {
-    class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly UsersContext db;
 

@@ -1,0 +1,23 @@
+﻿@model ArgusBot.Models.Account.RegistrationViewModel
+<h2>Creating new account</h2>
+<form class="form" method="post" asp-controller="Account" asp-action="Registration">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="form-group">
+        <label asp-for="Login"></label><br />
+        <input class="form-control" asp-for="Login" />
+        <span class="alert-danger" asp-validation-for="Login"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label><br />
+        <input class="form-control" type="password" asp-for="Password" />
+        <span class="alert-danger" asp-validation-for="Password"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PasswordConfirm"></label><br />
+        <input class="form-control" asp-for="PasswordConfirm" />
+        <span class="alert-danger" asp-validation-for="PasswordConfirm"></span>
+    </div>
+    <div>
+        <input class="btn btn-primary" type="submit" value="SignUp" />
+    </div>
+</form>
