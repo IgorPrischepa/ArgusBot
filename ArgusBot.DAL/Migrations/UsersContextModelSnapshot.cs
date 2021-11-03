@@ -26,16 +26,13 @@ namespace ArgusBot.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Login")
-                        .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
                     b.Property<string>("NormalizedLogin")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TelegramId")
@@ -44,7 +41,8 @@ namespace ArgusBot.DAL.Migrations
                     b.HasKey("UserGuid");
 
                     b.HasIndex("NormalizedLogin")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[NormalizedLogin] IS NOT NULL");
 
                     b.ToTable("Users");
                 });

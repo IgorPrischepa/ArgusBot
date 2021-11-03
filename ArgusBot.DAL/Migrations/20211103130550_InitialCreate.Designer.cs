@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArgusBot.DAL.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    [Migration("20211102190537_Unique normalized filed")]
-    partial class Uniquenormalizedfiled
+    [Migration("20211103130550_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,25 +28,23 @@ namespace ArgusBot.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Login")
-                        .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
                     b.Property<string>("NormalizedLogin")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TelegramAccount")
+                    b.Property<string>("TelegramId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserGuid");
 
                     b.HasIndex("NormalizedLogin")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[NormalizedLogin] IS NOT NULL");
 
                     b.ToTable("Users");
                 });
