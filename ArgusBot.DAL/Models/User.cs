@@ -10,14 +10,11 @@ namespace ArgusBot.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UserGuid { get; set; }
 
-        [Required]
         [MaxLength(40)]
         public string Login { get; set; }
 
-        [Required]
         public string NormalizedLogin { get; set; }
 
-        [Required]
         public string Password { get; set; }
 
         public string TelegramId { get; set; }

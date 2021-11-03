@@ -41,8 +41,9 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public User GetUserByTelegramAccount(string telegramId)
         {
-            return db.Users.First(u => u.TelegramId == telegramId.ToLower());
+            return db.Users.First(u => u.TelegramId.ToLower() == telegramId.ToLower());
         }
+
         public void Update(User user)
         {
             db.Entry(user).State = EntityState.Modified;
