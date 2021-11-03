@@ -3,16 +3,23 @@ using ArgusBot.BLL.Services.Interfaces;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.DAL.Models;
 using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace ArgusBot.BLL.Services.Implementation
 {
     class UserService : IUserService
     {
         private readonly IUserRepository usersRepository;
+        private readonly IHttpContextAccessor context;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
             usersRepository = userRepository;
+            context = httpContextAccessor;
         }
 
         public bool AddTelegramToAccount(Guid userGuid, string telegramId)
@@ -47,6 +54,15 @@ namespace ArgusBot.BLL.Services.Implementation
             {
                 if (CreateNewUserByTelegramAccount(telegramId))
                 {
+                    var user = usersRepository.GetUserByTelegramAccount(telegramId);
+
+                    CreateAuthCoolkieAsync(new Profile
+                    {
+                        UserGuid = user.UserGuid,
+                        Login = user.Login,
+                        TelegramId = user.TelegramId
+                    });
+
                     return true;
                 }
             }
@@ -123,9 +139,42 @@ namespace ArgusBot.BLL.Services.Implementation
             };
         }
 
-        public void Logout()
+        public async void Logout()
         {
-            throw new NotImplementedException();
+            await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        private async void CreateAuthCoolkieAsync(Profile profile)
+        {
+            var claims = new List<Claim>
+             {
+                new Claim(ClaimTypes.Name, profile.Login)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+
+                //IsPersistent = true,
+                // Whether the authentication session is persisted across 
+                // multiple requests. When used with cookies, controls
+                // whether the cookie's lifetime is absolute (matching the
+                // lifetime of the authentication ticket) or session-based.
+
+                //IssuedUtc = <DateTimeOffset>,
+                // The time at which the authentication ticket was issued.
+
+                RedirectUri = "/Home"
+            };
+
+            await context.HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
         }
     }
 }

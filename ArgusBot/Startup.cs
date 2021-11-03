@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ArgusBot
 {
@@ -29,6 +30,10 @@ namespace ArgusBot
             string connection = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<UsersContext>(options => options.UseSqlServer(connection));
+
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
             services.AddControllersWithViews();
         }
