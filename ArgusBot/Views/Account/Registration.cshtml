@@ -1,5 +1,13 @@
 ﻿@model ArgusBot.Models.Account.RegistrationViewModel
 <h2>Creating new account</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
 <form class="form" method="post" asp-controller="Account" asp-action="Registration">
     <div asp-validation-summary="ModelOnly"></div>
     <div class="form-group">
@@ -18,6 +26,6 @@
         <span class="alert-danger" asp-validation-for="PasswordConfirm"></span>
     </div>
     <div>
-        <input class="btn btn-primary" type="submit" value="SignUp" />
+        <input class="btn btn-primary" type="submit" value="Complete registration" />
     </div>
 </form>

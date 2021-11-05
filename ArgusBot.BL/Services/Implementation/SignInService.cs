@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace ArgusBot.BLL.Services.Implementation
 {
@@ -25,10 +26,10 @@ namespace ArgusBot.BLL.Services.Implementation
 
         public bool Authorize(string login, string password)
         {
-            try
-            {
-                var user = _userRepository.GetUserByLogin(login);
+            var user = _userRepository.GetUserByLogin(login);
 
+            if (user != null)
+            {
                 if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
                     CreateAuthCoolkieAsync(new Profile()
@@ -41,37 +42,33 @@ namespace ArgusBot.BLL.Services.Implementation
                     return true;
                 }
             }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
 
             return false;
         }
 
         public bool AuthorizeByTelegramAccount(string telegramId)
         {
-            try
-            {
-                var user = _userRepository.GetUserByTelegramAccount(telegramId);
+            var user = _userRepository.GetUserByTelegramAccount(telegramId);
 
-            }
-            catch (ArgumentNullException)
+            if (user == null)
             {
                 if (_userService.CreateNewUserByTelegramAccount(telegramId))
                 {
-                    var user = _userRepository.GetUserByTelegramAccount(telegramId);
-
-                    CreateAuthCoolkieAsync(new Profile
-                    {
-                        UserGuid = user.UserGuid,
-                        Login = user.Login,
-                        TelegramId = user.TelegramId
-                    });
-
-                    return true;
+                    AuthorizeByTelegramAccount(telegramId);
+                }
+                else
+                {
+                    return false;
                 }
             }
+
+            CreateAuthCoolkieAsync(new Profile
+            {
+                UserGuid = user.UserGuid,
+                Login = user.Login,
+                TelegramId = user.TelegramId
+            });
+
             return true;
         }
 
@@ -82,9 +79,12 @@ namespace ArgusBot.BLL.Services.Implementation
 
         private async void CreateAuthCoolkieAsync(Profile profile)
         {
+            bool HasTelegramAccount = profile.TelegramId != null;
+
             var claims = new List<Claim>
              {
-                new Claim(ClaimTypes.Name, profile.Login)
+                new Claim(ClaimTypes.Name, profile.Login),
+                new Claim(ClaimValueTypes.Boolean, HasTelegramAccount.ToString())
             };
 
             var claimsIdentity = new ClaimsIdentity(

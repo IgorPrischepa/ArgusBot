@@ -1,8 +1,6 @@
 ﻿using ArgusBot.BLL.Services.Interfaces;
-using ArgusBot.Models;
 using ArgusBot.Models.Account;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace ArgusBot.Controllers.Account
 {
@@ -34,7 +32,7 @@ namespace ArgusBot.Controllers.Account
         {
             if (!_signInService.Authorize(LoginInput, passwordInput))
             {
-                ViewBag.ErrorMessage = "Error! User not found. Please, try again.";
+                ViewBag.ErrorMessage = "Error! The user is not found or the password is incorrect. Please try again.";
 
                 return View();
             };
@@ -55,16 +53,25 @@ namespace ArgusBot.Controllers.Account
             if (ModelState.IsValid)
             {
                 var result = _userService.CreateNewUser(model.Login, model.Password);
+
                 if (result)
                 {
                     _signInService.Authorize(model.Login, model.Password);
                     return RedirectToAction("Index", "Home");
                 }
-                ViewBag.ErrorMessage = "User not created.";
-            }
-            ViewBag.ErrorMessage = "Invalid input";
 
+                ViewBag.ErrorMessage = "This user already exists. Please use a different name.";
+                return View();
+            }
+
+            ViewBag.ErrorMessage = "Invalid input";
             return View();
+        }
+
+        public IActionResult LogOut()
+        {
+            _signInService.Logout();
+            return RedirectToAction("Login", "Account");
         }
     }
 }
