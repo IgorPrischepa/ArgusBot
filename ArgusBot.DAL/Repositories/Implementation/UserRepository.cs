@@ -26,6 +26,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
         public void Delete(Guid id)
         {
             User user = db.Users.First(u => u.UserGuid == id);
+            db.Entry(user).State = EntityState.Deleted;
             Save();
         }
 

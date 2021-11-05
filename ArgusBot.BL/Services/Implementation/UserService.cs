@@ -48,6 +48,7 @@ namespace ArgusBot.BLL.Services.Implementation
 
         public bool CreateNewUserByTelegramAccount(string telegramId)
         {
+
             var newUser = new User
             {
                 Login = telegramId,
