@@ -31,17 +31,17 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public User GetUserById(Guid id)
         {
-            return db.Users.First(u => u.UserGuid == id);
+            return db.Users.FirstOrDefault(u => u.UserGuid == id);
         }
 
         public User GetUserByLogin(string login)
         {
-            return db.Users.First(u => u.NormalizedLogin == login.ToLower());
+            return db.Users.FirstOrDefault(u => u.NormalizedLogin == login.ToLower());
         }
 
         public User GetUserByTelegramAccount(string telegramId)
         {
-            return db.Users.First(u => u.TelegramId.ToLower() == telegramId.ToLower());
+            return db.Users.FirstOrDefault(u => u.TelegramId.ToLower() == telegramId.ToLower());
         }
 
         public void Update(User user)
