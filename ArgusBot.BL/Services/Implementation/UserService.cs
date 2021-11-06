@@ -3,8 +3,7 @@ using ArgusBot.BLL.Services.Interfaces;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.DAL.Models;
 using System;
-
-using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace ArgusBot.BLL.Services.Implementation
 {
@@ -17,25 +16,31 @@ namespace ArgusBot.BLL.Services.Implementation
             usersRepository = userRepository;
         }
 
-        public bool AddTelegramToAccount(Guid userGuid, string telegramId)
+        public async Task<bool> AddTelegramToAccountAsync(Guid userGuid, string telegramId)
         {
-            var user = usersRepository.GetUserById(userGuid);
+            User user = await usersRepository.GetUserByIdAsync(userGuid);
+
             user.TelegramId = telegramId;
-            usersRepository.Update(user);
+
+            await usersRepository.UpdateAsync(user);
+
             return true;
         }
 
-        public bool ChangePassword(Guid userGuid, string newPassword)
+        public async Task<bool> ChangePasswordAsync(Guid userGuid, string newPassword)
         {
-            var user = usersRepository.GetUserById(userGuid);
+            User user = await usersRepository.GetUserByIdAsync(userGuid);
+
             user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
-            usersRepository.Update(user);
+
+            await usersRepository.UpdateAsync(user);
+
             return true;
         }
 
-        public bool CreateNewUser(string login, string password)
+        public async Task<bool> CreateNewUserAsync(string login, string password)
         {
-            var user = usersRepository.GetUserByLogin(login);
+            User user = await usersRepository.GetUserByLoginAsync(login);
 
             if (user != null)
             {
@@ -49,34 +54,36 @@ namespace ArgusBot.BLL.Services.Implementation
                 Password = BCrypt.Net.BCrypt.HashPassword(password)
             };
 
-            usersRepository.Create(newUser);
+            await usersRepository.CreateAsync(newUser);
 
             return true;
         }
 
-        public bool CreateNewUserByTelegramAccount(string telegramId)
+        public async Task<bool> CreateNewUserByTelegramAccountAsync(string telegramId)
         {
-            var user = usersRepository.GetUserByTelegramAccount(telegramId);
+            User user = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
 
             if (user == null)
             {
                 var newUser = new User
                 {
                     Login = telegramId,
-                    NormalizedLogin = telegramId.ToLower(),
+                    NormalizedLogin = null,
                     Password = null,
                     TelegramId = telegramId
                 };
-                usersRepository.Create(newUser);
+                await usersRepository.CreateAsync(newUser);
+
                 return true;
             }
 
             return false;
         }
 
-        public Profile GetUserByLogin(string login)
+        public async Task<Profile> GetUserByLoginAsync(string login)
         {
-            var user = usersRepository.GetUserByLogin(login);
+            User user = await usersRepository.GetUserByLoginAsync(login);
+
             if (user != null)
             {
                 return new Profile
@@ -89,9 +96,10 @@ namespace ArgusBot.BLL.Services.Implementation
             return null;
         }
 
-        public Profile GetUserByGuid(Guid login)
+        public async Task<Profile> GetUserByGuidAsync(Guid login)
         {
-            var user = usersRepository.GetUserById(login);
+            User user = await usersRepository.GetUserByIdAsync(login);
+
             if (user != null)
             {
                 return new Profile
@@ -104,9 +112,9 @@ namespace ArgusBot.BLL.Services.Implementation
             return null;
         }
 
-        public Profile GetUserByTelegramAccount(string telegramId)
+        public async Task<Profile> GetUserByTelegramAccountAsync(string telegramId)
         {
-            var user = usersRepository.GetUserByTelegramAccount(telegramId);
+            User user = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
 
             if (user != null)
             {

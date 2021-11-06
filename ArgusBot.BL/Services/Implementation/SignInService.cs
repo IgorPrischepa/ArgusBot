@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using ArgusBot.DAL.Models;
 
 namespace ArgusBot.BLL.Services.Implementation
 {
@@ -24,20 +25,15 @@ namespace ArgusBot.BLL.Services.Implementation
             _userRepository = userRepository;
         }
 
-        public bool Authorize(string login, string password)
+        public async Task<bool> AuthenticateAsync(string login, string password)
         {
-            var user = _userRepository.GetUserByLogin(login);
+            User user = await _userRepository.GetUserByLoginAsync(login);
 
             if (user != null)
             {
                 if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
-                    CreateAuthCookieAsync(new Profile()
-                    {
-                        Login = user.Login,
-                        UserGuid = user.UserGuid,
-                        TelegramId = user.TelegramId
-                    });
+                    await CreateAuthCookieAsync(new Profile() { Login = user.Login, UserGuid = user.UserGuid, TelegramId = user.TelegramId });
 
                     return true;
                 }
@@ -46,15 +42,16 @@ namespace ArgusBot.BLL.Services.Implementation
             return false;
         }
 
-        public bool AuthorizeByTelegramAccount(string telegramId)
+        public async Task<bool> AuthorizeByTelegramAccountAsync(string telegramId)
         {
-            var user = _userRepository.GetUserByTelegramAccount(telegramId);
+            User user = await _userRepository.GetUserByTelegramAccountAsync(telegramId);
 
             if (user == null)
             {
-                if (_userService.CreateNewUserByTelegramAccount(telegramId))
+                bool isSuccsesfull = await _userService.CreateNewUserByTelegramAccountAsync(telegramId);
+                if (isSuccsesfull)
                 {
-                    AuthorizeByTelegramAccount(telegramId);
+                    await AuthorizeByTelegramAccountAsync(telegramId);
                 }
                 else
                 {
@@ -62,7 +59,7 @@ namespace ArgusBot.BLL.Services.Implementation
                 }
             }
 
-            CreateAuthCookieAsync(new Profile
+            await CreateAuthCookieAsync(new Profile
             {
                 UserGuid = user.UserGuid,
                 Login = user.Login,
@@ -72,12 +69,12 @@ namespace ArgusBot.BLL.Services.Implementation
             return true;
         }
 
-        public async void Logout()
+        public async Task LogoutAsync()
         {
             await _context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        private async void CreateAuthCookieAsync(Profile profile)
+        private async Task CreateAuthCookieAsync(Profile profile)
         {
             bool HasTelegramAccount = profile.TelegramId != null;
 
@@ -93,7 +90,8 @@ namespace ArgusBot.BLL.Services.Implementation
             var authProperties = new AuthenticationProperties
             {
                 AllowRefresh = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(180),
+
             };
 
             await _context.HttpContext.SignInAsync(

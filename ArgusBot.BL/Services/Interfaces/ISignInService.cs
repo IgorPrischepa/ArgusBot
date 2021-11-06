@@ -1,11 +1,13 @@
-﻿namespace ArgusBot.BLL.Services.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace ArgusBot.BLL.Services.Interfaces
 {
     public interface ISignInService
     {
-        public bool Authorize(string login, string password);
+        public Task<bool> AuthenticateAsync(string login, string password);
 
-        public bool AuthorizeByTelegramAccount(string telegramId);
+        public Task<bool> AuthorizeByTelegramAccountAsync(string telegramId);
 
-        public void Logout();
+        public Task LogoutAsync();
     }
 }

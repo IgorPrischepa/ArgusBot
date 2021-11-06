@@ -1,6 +1,7 @@
 ﻿using ArgusBot.BLL.Services.Interfaces;
 using ArgusBot.Models.Account;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ArgusBot.Controllers.Account
 {
@@ -26,9 +27,11 @@ namespace ArgusBot.Controllers.Account
             return View();
         }
 
-        public IActionResult LoginByTelegram(string telegramId)
+        public async Task<IActionResult> LoginByTelegram(string telegramId)
         {
-            if (!_signInService.AuthorizeByTelegramAccount(telegramId))
+            bool isSuccesfull = await _signInService.AuthorizeByTelegramAccountAsync(telegramId);
+
+            if (!isSuccesfull)
             {
                 ViewBag.ErrorMessage = "Error! Something wrong, please try again.";
 
@@ -40,9 +43,11 @@ namespace ArgusBot.Controllers.Account
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Login(string LoginInput, string passwordInput)
+        public async Task<IActionResult> Login(string loginInput, string passwordInput)
         {
-            if (!_signInService.Authorize(LoginInput, passwordInput))
+            bool isSuccesfull = await _signInService.AuthenticateAsync(loginInput, passwordInput);
+
+            if (!isSuccesfull)
             {
                 ViewBag.ErrorMessage = "Error! The user is not found or the password is incorrect. Please try again.";
 
@@ -60,15 +65,15 @@ namespace ArgusBot.Controllers.Account
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Registration(RegistrationViewModel model)
+        public async Task<IActionResult> Registration(RegistrationViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var result = _userService.CreateNewUser(model.Login, model.Password);
+                bool result = await _userService.CreateNewUserAsync(model.Login, model.Password);
 
                 if (result)
                 {
-                    _signInService.Authorize(model.Login, model.Password);
+                    await _signInService.AuthenticateAsync(model.Login, model.Password);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -80,9 +85,9 @@ namespace ArgusBot.Controllers.Account
             return View();
         }
 
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
-            _signInService.Logout();
+            await _signInService.LogoutAsync();
             return RedirectToAction("Login", "Account");
         }
     }
