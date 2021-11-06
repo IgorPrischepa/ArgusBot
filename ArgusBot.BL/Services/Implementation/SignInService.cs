@@ -32,7 +32,7 @@ namespace ArgusBot.BLL.Services.Implementation
             {
                 if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
-                    CreateAuthCoolkieAsync(new Profile()
+                    CreateAuthCookieAsync(new Profile()
                     {
                         Login = user.Login,
                         UserGuid = user.UserGuid,
@@ -62,7 +62,7 @@ namespace ArgusBot.BLL.Services.Implementation
                 }
             }
 
-            CreateAuthCoolkieAsync(new Profile
+            CreateAuthCookieAsync(new Profile
             {
                 UserGuid = user.UserGuid,
                 Login = user.Login,
@@ -77,7 +77,7 @@ namespace ArgusBot.BLL.Services.Implementation
             await _context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        private async void CreateAuthCoolkieAsync(Profile profile)
+        private async void CreateAuthCookieAsync(Profile profile)
         {
             bool HasTelegramAccount = profile.TelegramId != null;
 
