@@ -3,8 +3,7 @@ using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
-
+using System.Threading.Tasks;
 
 namespace ArgusBot.DAL.Repositories.Implementation
 {
@@ -17,42 +16,43 @@ namespace ArgusBot.DAL.Repositories.Implementation
             db = usersContext;
         }
 
-        public void Create(User user)
+        public async Task CreateAsync(User user)
         {
-            db.Users.Add(user);
-            Save();
+            await db.Users.AddAsync(user);
+            await SaveAsync();
         }
 
-        public void Delete(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            User user = db.Users.First(u => u.UserGuid == id);
+            User user = await db.Users.FirstAsync(u => u.UserGuid == id);
             db.Entry(user).State = EntityState.Deleted;
-            Save();
+            await SaveAsync();
         }
 
-        public User GetUserById(Guid id)
+        public async Task<User> GetUserByIdAsync(Guid id)
         {
-            return db.Users.FirstOrDefault(u => u.UserGuid == id);
+            return await db.Users.FirstOrDefaultAsync(u => u.UserGuid == id);
         }
 
-        public User GetUserByLogin(string login)
+        public async Task<User> GetUserByLoginAsync(string login)
         {
-            return db.Users.FirstOrDefault(u => u.NormalizedLogin == login.ToLower());
+            return await db.Users.FirstOrDefaultAsync(u => u.NormalizedLogin == login.ToLower());
         }
 
-        public User GetUserByTelegramAccount(string telegramId)
+        public async Task<User> GetUserByTelegramAccountAsync(string telegramId)
         {
-            return db.Users.FirstOrDefault(u => u.TelegramId.ToLower() == telegramId.ToLower());
+            return await db.Users.FirstOrDefaultAsync(u => u.TelegramId.ToLower() == telegramId.ToLower());
         }
 
-        public void Update(User user)
+        public async Task UpdateAsync(User user)
         {
             db.Entry(user).State = EntityState.Modified;
+            await SaveAsync();
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
 }

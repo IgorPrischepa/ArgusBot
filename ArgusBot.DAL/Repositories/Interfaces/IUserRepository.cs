@@ -1,22 +1,23 @@
 ﻿using ArgusBot.DAL.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace ArgusBot.DAL.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        public User GetUserById(Guid id);
+        Task<User> GetUserByIdAsync(Guid id);
 
-        public User GetUserByLogin(string login);
+        Task<User> GetUserByLoginAsync(string login);
 
-        public User GetUserByTelegramAccount(string telegramId);
+        Task<User> GetUserByTelegramAccountAsync(string telegramId);
 
-        public void Create(User user);
+        Task CreateAsync(User user);
 
-        public void Update(User user);
+        Task UpdateAsync(User user);
 
-        public void Delete(Guid id);
+        Task DeleteAsync(Guid id);
 
-        void Save();
+        Task SaveAsync();
     }
 }
