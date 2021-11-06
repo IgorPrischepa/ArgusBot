@@ -26,6 +26,18 @@ namespace ArgusBot.Controllers.Account
             return View();
         }
 
+        public IActionResult LoginByTelegram(string telegramId)
+        {
+            if (!_signInService.AuthorizeByTelegramAccount(telegramId))
+            {
+                ViewBag.ErrorMessage = "Error! Something wrong, please try again.";
+
+                return View();
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Login(string LoginInput, string passwordInput)
