@@ -29,7 +29,7 @@ namespace ArgusBot.Controllers.Account
 
         public async Task<IActionResult> LoginByTelegram(string telegramId)
         {
-            bool isSuccesfull = await _signInService.AuthorizeByTelegramAccountAsync(telegramId);
+            bool isSuccesfull = await _signInService.AuthenticateByTelegramAccountAsync(telegramId);
 
             if (!isSuccesfull)
             {

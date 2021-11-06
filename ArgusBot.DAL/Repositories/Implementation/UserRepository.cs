@@ -41,7 +41,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public async Task<User> GetUserByTelegramAccountAsync(string telegramId)
         {
-            return await db.Users.FirstOrDefaultAsync(u => u.TelegramId.ToLower() == telegramId.ToLower());
+            return await db.Users.FirstOrDefaultAsync(u => u.NormalizedTelegramLogin == telegramId.ToLower());
         }
 
         public async Task UpdateAsync(User user)

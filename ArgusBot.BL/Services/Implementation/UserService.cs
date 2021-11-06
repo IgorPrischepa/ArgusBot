@@ -70,7 +70,8 @@ namespace ArgusBot.BLL.Services.Implementation
                     Login = telegramId,
                     NormalizedLogin = null,
                     Password = null,
-                    TelegramId = telegramId
+                    TelegramId = telegramId,
+                    NormalizedTelegramLogin = telegramId.ToLower()
                 };
                 await usersRepository.CreateAsync(newUser);
 

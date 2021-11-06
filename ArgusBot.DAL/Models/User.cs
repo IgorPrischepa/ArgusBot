@@ -15,6 +15,8 @@ namespace ArgusBot.DAL.Models
 
         public string NormalizedLogin { get; set; }
 
+        public string NormalizedTelegramLogin { get; set; }
+
         public string Password { get; set; }
 
         public string TelegramId { get; set; }

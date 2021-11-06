@@ -15,6 +15,7 @@ namespace ArgusBot.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasIndex(u => u.NormalizedLogin).IsUnique();
+            modelBuilder.Entity<User>().HasIndex(u => u.NormalizedTelegramLogin).IsUnique();
         }
     }
 }

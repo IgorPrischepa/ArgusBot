@@ -42,7 +42,7 @@ namespace ArgusBot.BLL.Services.Implementation
             return false;
         }
 
-        public async Task<bool> AuthorizeByTelegramAccountAsync(string telegramId)
+        public async Task<bool> AuthenticateByTelegramAccountAsync(string telegramId)
         {
             User user = await _userRepository.GetUserByTelegramAccountAsync(telegramId);
 
@@ -51,7 +51,7 @@ namespace ArgusBot.BLL.Services.Implementation
                 bool isSuccsesfull = await _userService.CreateNewUserByTelegramAccountAsync(telegramId);
                 if (isSuccsesfull)
                 {
-                    await AuthorizeByTelegramAccountAsync(telegramId);
+                    await AuthenticateByTelegramAccountAsync(telegramId);
                 }
                 else
                 {
