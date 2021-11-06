@@ -1,5 +1,3 @@
-using System;
-
 namespace ArgusBot.Models
 {
     public class ErrorViewModel

@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ArgusBot.DAL.Models;
+﻿using ArgusBot.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ArgusBot.Data
 {

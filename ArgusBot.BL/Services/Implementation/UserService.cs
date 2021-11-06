@@ -1,7 +1,7 @@
 ﻿using ArgusBot.BLL.DTO;
 using ArgusBot.BLL.Services.Interfaces;
-using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.DAL.Models;
+using ArgusBot.DAL.Repositories.Interfaces;
 using System;
 using System.Threading.Tasks;
 

@@ -1,14 +1,14 @@
 ﻿using ArgusBot.BLL.DTO;
 using ArgusBot.BLL.Services.Interfaces;
+using ArgusBot.DAL.Models;
 using ArgusBot.DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using ArgusBot.DAL.Models;
 
 namespace ArgusBot.BLL.Services.Implementation
 {
@@ -76,12 +76,12 @@ namespace ArgusBot.BLL.Services.Implementation
 
         private async Task CreateAuthCookieAsync(Profile profile)
         {
-            bool HasTelegramAccount = profile.TelegramId != null;
+            bool hasTelegramAccount = profile.TelegramId != null;
 
             var claims = new List<Claim>
              {
                 new Claim(ClaimTypes.Name, profile.Login),
-                new Claim(ClaimValueTypes.Boolean, HasTelegramAccount.ToString())
+                new Claim(ClaimValueTypes.Boolean, hasTelegramAccount.ToString())
             };
 
             var claimsIdentity = new ClaimsIdentity(
