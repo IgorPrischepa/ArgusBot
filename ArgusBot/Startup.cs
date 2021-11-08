@@ -1,10 +1,13 @@
-using ArgusBot.Services.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Telegram.Bot;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ArgusBot
 {
@@ -17,9 +20,11 @@ namespace ArgusBot
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddHttpClient("tgclient").AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(Configuration["bot-token"], client));
-            services.AddHostedService<TelegramHostedService>().AddLogging(log=>log.AddConsole());
+            services.AddControllersWithViews();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISignInService, SignInService>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -27,6 +32,7 @@ namespace ArgusBot
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
