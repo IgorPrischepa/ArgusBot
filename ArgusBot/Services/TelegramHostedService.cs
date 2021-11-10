@@ -14,10 +14,13 @@ namespace ArgusBot.Services.Implementations
     {
         private readonly ITelegramBotClient _client;
         private readonly ILogger<TelegramHostedService> _logger;
-        public TelegramHostedService(ITelegramBotClient client, ILogger<TelegramHostedService> logger)
+        private readonly IHostApplicationLifetime _lifetime;
+
+        public TelegramHostedService(ITelegramBotClient client, ILogger<TelegramHostedService> logger, IHostApplicationLifetime lifetime)
         {
             _client = client;
             _logger = logger;
+            _lifetime = lifetime;
         }
         private async Task HandleUpdate(ITelegramBotClient client,Update update,CancellationToken cancelToken)
         {
@@ -35,8 +38,8 @@ namespace ArgusBot.Services.Implementations
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), cancellationToken);
-            _logger.LogInformation("Start working of bot");
+            _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), _lifetime.ApplicationStopping);
+            _logger.LogInformation("Start work of telegram bot");
             return Task.CompletedTask;
         }
 
@@ -44,7 +47,7 @@ namespace ArgusBot.Services.Implementations
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                _client.StopReceiving();
+                _logger.LogWarning("It`s beginning a process of stopping telegram host service!");
             }
             return Task.CompletedTask;
         }

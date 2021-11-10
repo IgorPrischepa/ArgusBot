@@ -9,7 +9,6 @@ namespace ArgusBot.Data
 
         public UsersContext(DbContextOptions<UsersContext> options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

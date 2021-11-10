@@ -1,13 +1,17 @@
+using ArgusBot.BLL.Services.Implementation;
+using ArgusBot.BLL.Services.Interfaces;
+using ArgusBot.DAL.Repositories.Implementation;
+using ArgusBot.DAL.Repositories.Interfaces;
+using ArgusBot.Data;
+using ArgusBot.Services.Implementations;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Telegram.Bot;
 
 namespace ArgusBot
 {
@@ -20,7 +24,19 @@ namespace ArgusBot
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+            string connection = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<UsersContext>(options => options.UseSqlServer(connection));
+
+            services.AddHttpContextAccessor();
+
             services.AddControllersWithViews();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+            services.AddHttpClient("tgclient").AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(Configuration["bot-token"]));
+
+            services.AddHostedService<TelegramHostedService>().AddLogging(log=>log.AddConsole());
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -39,7 +55,7 @@ namespace ArgusBot
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
