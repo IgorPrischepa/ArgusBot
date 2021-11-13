@@ -39,21 +39,14 @@ namespace ArgusBot.Services.Implementations
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                _logger.LogInformation("Start work of telegram bot");
-                _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), _cancellationTelegramClientTokenSrc.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogWarning("Telegram bot already has not received updates");
-            }
+            _logger.LogInformation("Start work of telegram bot");
+            _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), _cancellationTelegramClientTokenSrc.Token);
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogWarning("Initiated a process of stopping telegram host service!");
+            _logger.LogInformation("Initiated a process of stopping telegram host service!");
             _cancellationTelegramClientTokenSrc.Cancel();
             return Task.CompletedTask;
         }
