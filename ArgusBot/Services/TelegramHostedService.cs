@@ -14,14 +14,16 @@ namespace ArgusBot.Services.Implementations
     {
         private readonly ITelegramBotClient _client;
         private readonly ILogger<TelegramHostedService> _logger;
-
+        private CancellationTokenSource _cancellationTelegramClientTokenSrc;
         public TelegramHostedService(ITelegramBotClient client, ILogger<TelegramHostedService> logger)
         {
             _client = client;
             _logger = logger;
+            _cancellationTelegramClientTokenSrc = new CancellationTokenSource();
         }
         private async Task HandleUpdate(ITelegramBotClient client, Update update, CancellationToken cancelToken)
         {
+            cancelToken.ThrowIfCancellationRequested();
             if (update.Type == UpdateType.Message)
             {
                 _logger.LogInformation("Message was received!");
@@ -30,22 +32,29 @@ namespace ArgusBot.Services.Implementations
         }
         private Task HandleError(ITelegramBotClient client, Exception exception, CancellationToken cancelToken)
         {
+            cancelToken.ThrowIfCancellationRequested();
             _logger.LogError(exception.Message);
             return Task.CompletedTask;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), cancellationToken);
-            _logger.LogInformation("Start work of telegram bot");
+            try
+            {
+                _logger.LogInformation("Start work of telegram bot");
+                _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), _cancellationTelegramClientTokenSrc.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("Telegram bot already has not received updates");
+            }
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _client.StopReceiving();
             _logger.LogWarning("Initiated a process of stopping telegram host service!");
-            Console.WriteLine(cancellationToken.IsCancellationRequested);
+            _cancellationTelegramClientTokenSrc.Cancel();
             return Task.CompletedTask;
         }
     }
