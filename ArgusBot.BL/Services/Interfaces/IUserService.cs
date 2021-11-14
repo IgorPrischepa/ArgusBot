@@ -1,8 +1,8 @@
-﻿using ArgusBot.BLL.DTO;
+﻿using ArgusBot.BL.DTO;
 using System;
 using System.Threading.Tasks;
 
-namespace ArgusBot.BLL.Services.Interfaces
+namespace ArgusBot.BL.Services.Interfaces
 {
     public interface IUserService
     {

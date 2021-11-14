@@ -1,11 +1,11 @@
-﻿using ArgusBot.BLL.DTO;
-using ArgusBot.BLL.Services.Interfaces;
+﻿using ArgusBot.BL.DTO;
+using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.DAL.Models;
 using ArgusBot.DAL.Repositories.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace ArgusBot.BLL.Services.Implementation
+namespace ArgusBot.BL.Services.Implementation
 {
     public class UserService : IUserService
     {

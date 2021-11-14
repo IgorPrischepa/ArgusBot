@@ -1,4 +1,4 @@
-﻿using ArgusBot.BLL.Services.Interfaces;
+﻿using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.Models.Account;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
-using ArgusBot.BLL.Services.Implementation;
-using ArgusBot.BLL.Services.Interfaces;
+using ArgusBot.BL.Services.Implementation;
+using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.DAL.Repositories.Implementation;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;

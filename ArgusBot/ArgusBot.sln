@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot", "ArgusBot.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot.DAL", "..\ArgusBot.DAL\ArgusBot.DAL.csproj", "{F5548A2E-5F59-4DB0-94D1-E8032DC2DAED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot.BLL", "..\ArgusBot.BL\ArgusBot.BLL.csproj", "{1D2731D1-535E-4E6A-B2C0-1C4808BF4A22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgusBot.BL", "..\ArgusBot.BL\ArgusBot.BL.csproj", "{3BDFE207-075B-4F6F-9098-64D3788C8890}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{F5548A2E-5F59-4DB0-94D1-E8032DC2DAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5548A2E-5F59-4DB0-94D1-E8032DC2DAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5548A2E-5F59-4DB0-94D1-E8032DC2DAED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D2731D1-535E-4E6A-B2C0-1C4808BF4A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D2731D1-535E-4E6A-B2C0-1C4808BF4A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D2731D1-535E-4E6A-B2C0-1C4808BF4A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D2731D1-535E-4E6A-B2C0-1C4808BF4A22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BDFE207-075B-4F6F-9098-64D3788C8890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BDFE207-075B-4F6F-9098-64D3788C8890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BDFE207-075B-4F6F-9098-64D3788C8890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BDFE207-075B-4F6F-9098-64D3788C8890}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

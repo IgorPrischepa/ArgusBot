@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ArgusBot.BLL.DTO
+namespace ArgusBot.BL.DTO
 {
     public class Profile
     {

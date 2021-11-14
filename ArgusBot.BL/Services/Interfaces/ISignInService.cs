@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ArgusBot.BLL.Services.Interfaces
+namespace ArgusBot.BL.Services.Interfaces
 {
     public interface ISignInService
     {
