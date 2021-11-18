@@ -5,10 +5,13 @@ using ArgusBot.DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Telegram.Bot.Extensions.LoginWidget;
 
 namespace ArgusBot.BL.Services.Implementation
 {
@@ -17,13 +20,21 @@ namespace ArgusBot.BL.Services.Implementation
         private readonly IHttpContextAccessor _context;
         private readonly IUserService _userService;
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<ISignInService> _logger;
 
-        public SignInService(IHttpContextAccessor httpContextAccessor, IUserService userService, IUserRepository userRepository)
+        public SignInService(IHttpContextAccessor httpContextAccessor,
+                             IUserService userService, 
+                             IUserRepository userRepository,
+                             IConfiguration configuration,
+                             ILogger<ISignInService> logger)
         {
             _userService = userService;
             _context = httpContextAccessor;
             _userRepository = userRepository;
+            _logger = logger;
+            Configuration = configuration;
         }
+        private IConfiguration Configuration { get; }
 
         public async Task<bool> AuthenticateAsync(string login, string password)
         {
@@ -33,48 +44,53 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
-                    await CreateAuthCookieAsync(new Profile() { Login = user.Login, UserGuid = user.UserGuid, TelegramId = user.TelegramId });
-
+                    var newUser = new ProfileDTO() { Login = user.Login, UserGuid = user.UserGuid, TelegramId = user.TelegramId };
+                    await CreateAuthCookieAsync(newUser);
+                    await AddCookiesForCheckedUser(newUser.Login);
                     return true;
                 }
             }
-
             return false;
         }
 
-        public async Task<bool> AuthenticateByTelegramAccountAsync(string telegramId)
+        public async Task<bool> AuthenticateByTelegramAccountAsync(SortedDictionary<string,string> queryString)
         {
-            User user = await _userRepository.GetUserByTelegramAccountAsync(telegramId);
-
-            if (user == null)
+            if(queryString.TryGetValue("id", out string id))
             {
-                bool isSuccsesfull = await _userService.CreateNewUserByTelegramAccountAsync(telegramId);
-                if (isSuccsesfull)
+                _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
+                ProfileDTO authUser = await _userService.GetUserByTelegramAccountAsync(id);
+                if(authUser != null)
                 {
-                    await AuthenticateByTelegramAccountAsync(telegramId);
+                    await AuthorizeViaTelegram(queryString, authUser);
+                    _logger?.LogInformation($"User:{authUser.TelegramId} has succesfully authorized!");
+                    await AddCookiesForCheckedUser(authUser.Login);
+                    return true;
                 }
                 else
                 {
-                    return false;
+                    if(queryString.TryGetValue("username", out string username))
+                    {
+                        ProfileDTO newUser = await _userService.CreateNewUserByTelegramAccountAsync(id, username);
+                        if(newUser.VerifyNotNull("New user has not added in the database!"))
+                        {
+                            _logger?.LogInformation($"It`s created a new user by data from telegram account");
+                            _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
+                            await AuthorizeViaTelegram(queryString, newUser);
+                            _logger?.LogInformation($"User:{newUser.TelegramId} has succesfully authorized!");
+                            await AddCookiesForCheckedUser(newUser.Login);
+                            return true;
+                        }
+                    }
                 }
             }
-
-            await CreateAuthCookieAsync(new Profile
-            {
-                UserGuid = user.UserGuid,
-                Login = user.Login,
-                TelegramId = user.TelegramId
-            });
-
-            return true;
+            return false;
         }
-
         public async Task LogoutAsync()
         {
             await _context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        private async Task CreateAuthCookieAsync(Profile profile)
+        private async Task CreateAuthCookieAsync(ProfileDTO profile)
         {
             bool hasTelegramAccount = profile.TelegramId != null;
 
@@ -98,6 +114,52 @@ namespace ArgusBot.BL.Services.Implementation
                 CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
+        }
+        private async Task AuthorizeViaTelegram(SortedDictionary<string, string> data, ProfileDTO authorizedUser)
+        {
+            var widget = new LoginWidget(Configuration["bot-token"]);
+            widget.AllowedTimeOffset = 900;
+            var result = widget.CheckAuthorization(data);
+            switch (result)
+            {
+                case Authorization.Valid:
+                    {
+                        await CreateAuthCookieAsync(authorizedUser);
+                        break;
+                    }
+                case Authorization.InvalidHash:
+                    {
+                        _logger?.LogError("Computed hash in service was invalid!");
+                        throw new InvalidOperationException("Computed hash is invalid!");
+                    }
+                case Authorization.MissingFields:
+                    {
+                        _logger?.LogError("Authorization data from telegram was invalid!");
+                        throw new InvalidOperationException("Authorization data in invalid!");
+                    }
+                case Authorization.TooOld:
+                    {
+                        _logger.LogWarning("Authorization process is not avalaible now");
+                        throw new TimeoutException("Authorization process has stopped becaue of time for authorization is over!");
+                    }
+                case Authorization.InvalidAuthDateFormat:
+                    {
+                        _logger.LogError("Authorization date has not correct data!");
+                        throw new InvalidOperationException("Authorization date for this process is not correct!");
+                    }
+            }
+        }
+        private async Task AddCookiesForCheckedUser(string login)
+        {
+            ProfileDTO checkedUser = await _userService.GetUserByLoginAsync(login);
+            if (checkedUser.VerifyNotNull())
+            {
+                if (checkedUser.UserGuid != Guid.Empty)
+                    _context.HttpContext.Response.Cookies.Append("identifier", checkedUser.UserGuid.ToString());
+                if (!string.IsNullOrEmpty(checkedUser.TelegramId))
+                  _context.HttpContext.Response.Cookies.Append("IsAttachedTelegram", "1");
+                return;
+            }
         }
     }
 }

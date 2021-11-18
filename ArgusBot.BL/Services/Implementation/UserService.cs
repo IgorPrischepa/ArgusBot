@@ -2,7 +2,10 @@
 using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.DAL.Models;
 using ArgusBot.DAL.Repositories.Interfaces;
+using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace ArgusBot.BL.Services.Implementation
@@ -10,10 +13,13 @@ namespace ArgusBot.BL.Services.Implementation
     public class UserService : IUserService
     {
         private readonly IUserRepository usersRepository;
-
-        public UserService(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        private readonly ILogger<IUserService> _logger;
+        public UserService(IUserRepository userRepository, IMapper mapper, ILogger<IUserService> logger)
         {
             usersRepository = userRepository;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<bool> AddTelegramToAccountAsync(Guid userGuid, string telegramId)
@@ -46,7 +52,6 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 return false;
             }
-
             var newUser = new User
             {
                 Login = login,
@@ -59,35 +64,32 @@ namespace ArgusBot.BL.Services.Implementation
             return true;
         }
 
-        public async Task<bool> CreateNewUserByTelegramAccountAsync(string telegramId)
+        public async Task<ProfileDTO> CreateNewUserByTelegramAccountAsync(string telegramId, string userName)
         {
-            User user = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
-
-            if (user == null)
+            _logger.LogInformation("It`s initialized a process to create a new user by data from telegram");
+            var userDb = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
+            var userDTO = _mapper.Map<ProfileDTO>(userDb);
+            if (userDTO.VerifyNotNull("User doesn`t exist in database!"))
             {
-                var newUser = new User
+                var newUser = _mapper.Map<User>(userDTO);
+                if(newUser.VerifyNotNull("It`s happened a error during mapping process!"))
                 {
-                    Login = telegramId,
-                    NormalizedLogin = null,
-                    Password = null,
-                    TelegramId = telegramId,
-                    NormalizedTelegramLogin = telegramId.ToLower()
-                };
-                await usersRepository.CreateAsync(newUser);
-
-                return true;
+                    newUser.Password = GenerateRandomPassword();
+                    await usersRepository.CreateAsync(newUser);
+                    _logger.LogInformation($"It`s created a new user : {newUser.Login}");
+                    return userDTO;
+                }
             }
-
-            return false;
+            return null;
         }
 
-        public async Task<Profile> GetUserByLoginAsync(string login)
+        public async Task<ProfileDTO> GetUserByLoginAsync(string login)
         {
             User user = await usersRepository.GetUserByLoginAsync(login);
 
             if (user != null)
             {
-                return new Profile
+                return new ProfileDTO
                 {
                     UserGuid = user.UserGuid,
                     Login = user.Login,
@@ -97,13 +99,13 @@ namespace ArgusBot.BL.Services.Implementation
             return null;
         }
 
-        public async Task<Profile> GetUserByGuidAsync(Guid login)
+        public async Task<DTO.ProfileDTO> GetUserByGuidAsync(Guid login)
         {
             User user = await usersRepository.GetUserByIdAsync(login);
 
             if (user != null)
             {
-                return new Profile
+                return new ProfileDTO
                 {
                     UserGuid = user.UserGuid,
                     Login = user.Login,
@@ -113,13 +115,13 @@ namespace ArgusBot.BL.Services.Implementation
             return null;
         }
 
-        public async Task<Profile> GetUserByTelegramAccountAsync(string telegramId)
+        public async Task<ProfileDTO> GetUserByTelegramAccountAsync(string telegramId)
         {
             User user = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
 
             if (user != null)
             {
-                return new Profile
+                return new ProfileDTO
                 {
                     UserGuid = user.UserGuid,
                     Login = user.Login,
@@ -127,6 +129,15 @@ namespace ArgusBot.BL.Services.Implementation
                 };
             }
             return null;
+        }
+        private string GenerateRandomPassword(int length = 32)
+        {
+            using(var rng=new RNGCryptoServiceProvider())
+            {
+                var bytes = new byte[length];
+                rng.GetBytes(bytes);
+                return Convert.ToBase64String(bytes);
+            }
         }
     }
 }

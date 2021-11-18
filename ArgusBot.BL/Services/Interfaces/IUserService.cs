@@ -10,14 +10,14 @@ namespace ArgusBot.BL.Services.Interfaces
 
         public Task<bool> CreateNewUserAsync(string login, string password);
 
-        public Task<bool> CreateNewUserByTelegramAccountAsync(string telegramId);
+        public Task<ProfileDTO> CreateNewUserByTelegramAccountAsync(string telegramId,string userName);
 
         public Task<bool> ChangePasswordAsync(Guid userGuid, string newPassword);
 
-        public Task<Profile> GetUserByLoginAsync(string login);
+        public Task<ProfileDTO> GetUserByLoginAsync(string login);
 
-        public Task<Profile> GetUserByGuidAsync(Guid userGuid);
+        public Task<ProfileDTO> GetUserByGuidAsync(Guid userGuid);
 
-        public Task<Profile> GetUserByTelegramAccountAsync(string telegramId);
+        public Task<ProfileDTO> GetUserByTelegramAccountAsync(string telegramId);
     }
 }

@@ -39,9 +39,11 @@ namespace ArgusBot
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
 
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserService, UserService>().AddLogging(log => log.AddConsole());
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ISignInService, SignInService>();
+            services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
+            services.AddTransient<ICookieParser, CookieParser>();
+            services.AddTransient<IQueryParser, QueryParser>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

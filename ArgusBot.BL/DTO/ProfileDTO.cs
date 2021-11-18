@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ArgusBot.BL.Services;
+using System;
 
 namespace ArgusBot.BL.DTO
 {
-    public class Profile
+    public class ProfileDTO
     {
         public Guid UserGuid { get; set; }
 

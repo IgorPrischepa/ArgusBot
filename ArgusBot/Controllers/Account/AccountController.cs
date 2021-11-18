@@ -1,6 +1,9 @@
-﻿using ArgusBot.BL.Services.Interfaces;
+﻿using ArgusBot.BL.Services;
+using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.Models.Account;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Threading.Tasks;
 
 namespace ArgusBot.Controllers.Account
@@ -9,13 +12,18 @@ namespace ArgusBot.Controllers.Account
     {
         private readonly IUserService _userService;
         private readonly ISignInService _signInService;
+        private readonly IQueryParser _queryParser;
+        private readonly ICookieParser _cookieParser;
 
-        public AccountController(IUserService userService, ISignInService signInService)
+        public AccountController(IUserService userService, ISignInService signInService, IConfiguration configuration, IQueryParser queryParser, ICookieParser cookieParser)
         {
             _userService = userService;
             _signInService = signInService;
+            Configuration = configuration;
+            _queryParser = queryParser;
+            _cookieParser = cookieParser;
         }
-
+        private IConfiguration Configuration { get; }
         public IActionResult Index()
         {
             return View();
@@ -24,13 +32,36 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Login()
         {
+            return View(new LoginVM() { RedirectUrl = Configuration["data-auth"] });
+        }
+        [HttpGet]
+        public IActionResult InitiateAttachingTelegramAccount()
+        {
+            HttpContext.Response.Cookies.Append("isattachedtelegram", "-1");
+            return ViewComponent("AttachingTelegram");
+        }
+        [HttpGet]
+        public async Task<IActionResult> AttachTelegramAccount()
+        {
+            var queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
+            if (queryColect.VerifyNotNull() && 
+                queryColect.TryGetValue("id", out string telegramId) && 
+                HttpContext.Request.Cookies.TryGetValue("identifier", out string userIdString))
+            {
+                var userId = (Guid)_cookieParser.ParseString<Guid>(userIdString);
+                var isSuccesfull= await _userService.AddTelegramToAccountAsync(userId, telegramId);
+                if (isSuccesfull)
+                {
+                    return RedirectToAction("Index","Home");
+                }
+            }
+            ViewBag.ErrorMessage = "Cannot attach a telegram profile to the current web-account";
             return View();
         }
-
-        public async Task<IActionResult> LoginByTelegram(string telegramId)
+        [HttpGet]
+        public async Task<IActionResult> LoginByTelegram()
         {
-            bool isSuccesfull = await _signInService.AuthenticateByTelegramAccountAsync(telegramId);
-
+            bool isSuccesfull = await _signInService.AuthenticateByTelegramAccountAsync(_queryParser.ParseQueryString(HttpContext.Request.Query));
             if (!isSuccesfull)
             {
                 ViewBag.ErrorMessage = "Error! Something wrong, please try again.";
@@ -60,7 +91,7 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Registration()
         {
-            return View();
+            return View(new RegistrationViewModel() {RedirectUrl=Configuration["data-auth"]});
         }
 
         [HttpPost]
