@@ -53,7 +53,7 @@ namespace ArgusBot.BL.Services.Implementation
             var newUser = new User
             {
                 Login = login,
-                NormalizedLogin=login.ToLower(),
+                NormalizedLogin = login.ToLower(),
                 Password = BCrypt.Net.BCrypt.HashPassword(password)
             };
 
@@ -67,7 +67,7 @@ namespace ArgusBot.BL.Services.Implementation
             _logger.LogInformation("It`s initialized a process to create a new user by data from telegram");
             User userDb = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
             var userDTO = _mapper.Map<ProfileDTO>(userDb);
-            if (!userDTO.VerifyNotNull(throwException:false))
+            if (!userDTO.VerifyNotNull(throwException: false))
             {
                 userDTO = new ProfileDTO();
                 userDTO.TelegramId = telegramId;
@@ -132,7 +132,7 @@ namespace ArgusBot.BL.Services.Implementation
         }
         private string GenerateRandomPassword(int length = 32)
         {
-            using(var rng=new RNGCryptoServiceProvider())
+            using (var rng = new RNGCryptoServiceProvider())
             {
                 var bytes = new byte[length];
                 rng.GetBytes(bytes);

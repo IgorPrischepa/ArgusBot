@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ArgusBot.BL.Services.Interfaces
+﻿namespace ArgusBot.BL.Services.Interfaces
 {
     public interface ICookieParser
     {

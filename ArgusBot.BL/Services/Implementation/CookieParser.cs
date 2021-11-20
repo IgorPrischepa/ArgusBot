@@ -11,7 +11,7 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 case "Guid":
                     {
-                        if(Guid.TryParse(parsedString, out Guid parsedGuid))
+                        if (Guid.TryParse(parsedString, out Guid parsedGuid))
                         {
                             return parsedGuid;
                         }

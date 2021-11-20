@@ -1,5 +1,4 @@
-﻿using ArgusBot.BL.Services;
-using System;
+﻿using System;
 
 namespace ArgusBot.BL.DTO
 {

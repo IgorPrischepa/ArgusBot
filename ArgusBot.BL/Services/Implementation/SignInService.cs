@@ -23,7 +23,7 @@ namespace ArgusBot.BL.Services.Implementation
         private readonly ILogger<ISignInService> _logger;
 
         public SignInService(IHttpContextAccessor httpContextAccessor,
-                             IUserService userService, 
+                             IUserService userService,
                              IUserRepository userRepository,
                              IConfiguration configuration,
                              ILogger<ISignInService> logger)
@@ -53,13 +53,13 @@ namespace ArgusBot.BL.Services.Implementation
             return false;
         }
 
-        public async Task<bool> AuthenticateByTelegramAccountAsync(SortedDictionary<string,string> queryString)
+        public async Task<bool> AuthenticateByTelegramAccountAsync(SortedDictionary<string, string> queryString)
         {
-            if(queryString.TryGetValue("id", out string id))
+            if (queryString.TryGetValue("id", out string id))
             {
                 _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
                 ProfileDTO authUser = await _userService.GetUserByTelegramAccountAsync(id);
-                if(authUser.VerifyNotNull("User doesn`t exist in database",false))
+                if (authUser.VerifyNotNull("User doesn`t exist in database", false))
                 {
                     await AuthorizeViaTelegram(queryString, authUser);
                     _logger?.LogInformation($"User:{authUser.TelegramId} has succesfully authorized!");
@@ -68,10 +68,10 @@ namespace ArgusBot.BL.Services.Implementation
                 }
                 else
                 {
-                    if(queryString.TryGetValue("username", out string username))
+                    if (queryString.TryGetValue("username", out string username))
                     {
                         ProfileDTO newUser = await _userService.CreateNewUserByTelegramAccountAsync(id, username);
-                        if(newUser.VerifyNotNull("New user has not added in the database!"))
+                        if (newUser.VerifyNotNull("New user has not added in the database!"))
                         {
                             _logger?.LogInformation($"It`s created a new user by data from telegram account");
                             _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
@@ -162,7 +162,7 @@ namespace ArgusBot.BL.Services.Implementation
         }
         private void AddAttachTelegramCookies(string telegramId)
         {
-            if(string.IsNullOrEmpty(telegramId))
+            if (string.IsNullOrEmpty(telegramId))
                 _context.HttpContext.Response.Cookies.Append("attached_telegram", "false");
             else _context.HttpContext.Response.Cookies.Append("attached_telegram", "true");
         }

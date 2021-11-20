@@ -10,7 +10,7 @@ namespace ArgusBot.BL.Services.Interfaces
 
         public Task<bool> CreateNewUserAsync(string login, string password);
 
-        public Task<ProfileDTO> CreateNewUserByTelegramAccountAsync(string telegramId,string userName);
+        public Task<ProfileDTO> CreateNewUserByTelegramAccountAsync(string telegramId, string userName);
 
         public Task<bool> ChangePasswordAsync(Guid userGuid, string newPassword);
 

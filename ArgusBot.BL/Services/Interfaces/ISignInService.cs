@@ -7,7 +7,7 @@ namespace ArgusBot.BL.Services.Interfaces
     {
         public Task<bool> AuthenticateAsync(string login, string password);
 
-        public Task<bool> AuthenticateByTelegramAccountAsync(SortedDictionary<string,string> queryString);
+        public Task<bool> AuthenticateByTelegramAccountAsync(SortedDictionary<string, string> queryString);
 
         public Task LogoutAsync();
     }

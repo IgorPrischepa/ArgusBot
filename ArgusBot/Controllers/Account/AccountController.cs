@@ -43,16 +43,16 @@ namespace ArgusBot.Controllers.Account
         public async Task<IActionResult> AttachTelegramAccount()
         {
             var queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
-            if (queryColect.VerifyNotNull() && 
-                queryColect.TryGetValue("id", out string telegramId) && 
+            if (queryColect.VerifyNotNull() &&
+                queryColect.TryGetValue("id", out string telegramId) &&
                 HttpContext.Request.Cookies.TryGetValue("identifier", out string userIdString))
             {
                 var userId = (Guid)_cookieParser.ParseString<Guid>(userIdString);
-                var isSuccesfull= await _userService.AddTelegramToAccountAsync(userId, telegramId);
+                var isSuccesfull = await _userService.AddTelegramToAccountAsync(userId, telegramId);
                 if (isSuccesfull)
                 {
                     HttpContext.Response.Cookies.Append("attached_telegram", "true");
-                    return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index", "Home");
                 }
             }
             ViewBag.ErrorMessage = "Cannot attach a telegram profile to the current web-account";
@@ -91,7 +91,7 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Registration()
         {
-            return View(new RegistrationViewModel() {RedirectUrl=$"{Configuration["data-auth"]}/Account/LoginByTelegram" });
+            return View(new RegistrationViewModel() { RedirectUrl = $"{Configuration["data-auth"]}/Account/LoginByTelegram" });
         }
 
         [HttpPost]

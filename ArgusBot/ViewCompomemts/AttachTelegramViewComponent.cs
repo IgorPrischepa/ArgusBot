@@ -18,14 +18,14 @@ namespace ArgusBot.ViewCompomemts
             {
                 var redirectUrl = Configuration["data-auth"];
                 if (canBeAttached) return View(new AttachTelegramComponentVM() { RedirectUrl = $"{ redirectUrl}/Account/AttachTelegramAccount", IsAttachedTelegram = IsAttachedTelegram.InProgress });
-                if (HttpContext.Request.Cookies.TryGetValue("attached_telegram",out string value))
+                if (HttpContext.Request.Cookies.TryGetValue("attached_telegram", out string value))
                 {
-                    if(value=="true") return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.Yes });
+                    if (value == "true") return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.Yes });
                     else return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.No });
                 }
             }
             return View();
-         }
+        }
     }
 }
 
