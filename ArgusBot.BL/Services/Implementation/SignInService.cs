@@ -39,14 +39,14 @@ namespace ArgusBot.BL.Services.Implementation
         public async Task<bool> AuthenticateAsync(string login, string password)
         {
             User user = await _userRepository.GetUserByLoginAsync(login);
-
+            AddAttachTelegramCookies(user.TelegramId);
             if (user != null)
             {
                 if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
                     var newUser = new ProfileDTO() { Login = user.Login, UserGuid = user.UserGuid, TelegramId = user.TelegramId };
                     await CreateAuthCookieAsync(newUser);
-                    await AddCookiesForCheckedUser(newUser.Login);
+                    await AddIdCookies(newUser.Login);
                     return true;
                 }
             }
@@ -59,11 +59,11 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
                 ProfileDTO authUser = await _userService.GetUserByTelegramAccountAsync(id);
-                if(authUser != null)
+                if(authUser.VerifyNotNull("User doesn`t exist in database",false))
                 {
                     await AuthorizeViaTelegram(queryString, authUser);
                     _logger?.LogInformation($"User:{authUser.TelegramId} has succesfully authorized!");
-                    await AddCookiesForCheckedUser(authUser.Login);
+                    await AddIdCookies(authUser.Login);
                     return true;
                 }
                 else
@@ -77,7 +77,7 @@ namespace ArgusBot.BL.Services.Implementation
                             _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
                             await AuthorizeViaTelegram(queryString, newUser);
                             _logger?.LogInformation($"User:{newUser.TelegramId} has succesfully authorized!");
-                            await AddCookiesForCheckedUser(newUser.Login);
+                            await AddIdCookies(newUser.Login);
                             return true;
                         }
                     }
@@ -149,17 +149,22 @@ namespace ArgusBot.BL.Services.Implementation
                     }
             }
         }
-        private async Task AddCookiesForCheckedUser(string login)
+        private async Task AddIdCookies(string login)
         {
             ProfileDTO checkedUser = await _userService.GetUserByLoginAsync(login);
             if (checkedUser.VerifyNotNull())
             {
                 if (checkedUser.UserGuid != Guid.Empty)
                     _context.HttpContext.Response.Cookies.Append("identifier", checkedUser.UserGuid.ToString());
-                if (!string.IsNullOrEmpty(checkedUser.TelegramId))
-                  _context.HttpContext.Response.Cookies.Append("IsAttachedTelegram", "1");
+                AddAttachTelegramCookies(checkedUser.TelegramId);
                 return;
             }
+        }
+        private void AddAttachTelegramCookies(string telegramId)
+        {
+            if(string.IsNullOrEmpty(telegramId))
+                _context.HttpContext.Response.Cookies.Append("attached_telegram", "false");
+            else _context.HttpContext.Response.Cookies.Append("attached_telegram", "true");
         }
     }
 }

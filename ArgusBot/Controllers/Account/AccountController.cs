@@ -32,13 +32,12 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Login()
         {
-            return View(new LoginVM() { RedirectUrl = Configuration["data-auth"] });
+            return View(new LoginVM() { RedirectUrl = $"{Configuration["data-auth"]}/Account/LoginByTelegram" });
         }
         [HttpGet]
         public IActionResult InitiateAttachingTelegramAccount()
         {
-            HttpContext.Response.Cookies.Append("isattachedtelegram", "-1");
-            return ViewComponent("AttachingTelegram");
+            return ViewComponent("AttachTelegram", new { canBeAttached = true });
         }
         [HttpGet]
         public async Task<IActionResult> AttachTelegramAccount()
@@ -52,6 +51,7 @@ namespace ArgusBot.Controllers.Account
                 var isSuccesfull= await _userService.AddTelegramToAccountAsync(userId, telegramId);
                 if (isSuccesfull)
                 {
+                    HttpContext.Response.Cookies.Append("attached_telegram", "true");
                     return RedirectToAction("Index","Home");
                 }
             }
@@ -82,7 +82,7 @@ namespace ArgusBot.Controllers.Account
             {
                 ViewBag.ErrorMessage = "Error! The user is not found or the password is incorrect. Please try again.";
 
-                return View();
+                return View(new LoginVM() { RedirectUrl = $"{Configuration["data-auth"]}/Account/AttachTelegramAccount" });
             };
 
             return RedirectToAction("Index", "Home");
@@ -91,7 +91,7 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Registration()
         {
-            return View(new RegistrationViewModel() {RedirectUrl=Configuration["data-auth"]});
+            return View(new RegistrationViewModel() {RedirectUrl=$"{Configuration["data-auth"]}/Account/LoginByTelegram" });
         }
 
         [HttpPost]

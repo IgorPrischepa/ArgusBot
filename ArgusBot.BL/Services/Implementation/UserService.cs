@@ -32,7 +32,6 @@ namespace ArgusBot.BL.Services.Implementation
 
             return true;
         }
-
         public async Task<bool> ChangePasswordAsync(Guid userGuid, string newPassword)
         {
             User user = await usersRepository.GetUserByIdAsync(userGuid);
@@ -43,7 +42,6 @@ namespace ArgusBot.BL.Services.Implementation
 
             return true;
         }
-
         public async Task<bool> CreateNewUserAsync(string login, string password)
         {
             User user = await usersRepository.GetUserByLoginAsync(login);
@@ -55,7 +53,7 @@ namespace ArgusBot.BL.Services.Implementation
             var newUser = new User
             {
                 Login = login,
-                NormalizedLogin = login.ToLower(),
+                NormalizedLogin=login.ToLower(),
                 Password = BCrypt.Net.BCrypt.HashPassword(password)
             };
 
@@ -67,12 +65,15 @@ namespace ArgusBot.BL.Services.Implementation
         public async Task<ProfileDTO> CreateNewUserByTelegramAccountAsync(string telegramId, string userName)
         {
             _logger.LogInformation("It`s initialized a process to create a new user by data from telegram");
-            var userDb = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
+            User userDb = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
             var userDTO = _mapper.Map<ProfileDTO>(userDb);
-            if (userDTO.VerifyNotNull("User doesn`t exist in database!"))
+            if (!userDTO.VerifyNotNull(throwException:false))
             {
+                userDTO = new ProfileDTO();
+                userDTO.TelegramId = telegramId;
+                userDTO.Login = userName;
                 var newUser = _mapper.Map<User>(userDTO);
-                if(newUser.VerifyNotNull("It`s happened a error during mapping process!"))
+                if (newUser.VerifyNotNull("It`s happened a error during mapping process!"))
                 {
                     newUser.Password = GenerateRandomPassword();
                     await usersRepository.CreateAsync(newUser);
@@ -80,9 +81,8 @@ namespace ArgusBot.BL.Services.Implementation
                     return userDTO;
                 }
             }
-            return null;
+            return userDTO;
         }
-
         public async Task<ProfileDTO> GetUserByLoginAsync(string login)
         {
             User user = await usersRepository.GetUserByLoginAsync(login);

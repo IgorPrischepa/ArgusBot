@@ -4,13 +4,16 @@ namespace ArgusBot.BL.Services
 {
     public static class Extensions
     {
-        public static bool VerifyNotNull(this object checkedObject, string message = "")
+        public static bool VerifyNotNull(this object checkedObject, string message = "", bool throwException = true)
         {
             if (checkedObject == null)
             {
-                throw new NullReferenceException(message);
+                if(throwException)
+                    throw new NullReferenceException(message);
+                return false;
             }
             return true;
+
         }
     }
 }

@@ -12,17 +12,17 @@ namespace ArgusBot.ViewCompomemts
             Configuration = config;
         }
         private IConfiguration Configuration { get; }
-        public IViewComponentResult InvokeAsync()
+        public IViewComponentResult Invoke(bool canBeAttached)
         {
             if (HttpContext.Request.Cookies.ContainsKey("identifier"))
             {
                 var redirectUrl = Configuration["data-auth"];
-                if (HttpContext.Request.Cookies.TryGetValue("isattachedtelegram", out string isAttachedString))
+                if (canBeAttached) return View(new AttachTelegramComponentVM() { RedirectUrl = $"{ redirectUrl}/Account/AttachTelegramAccount", IsAttachedTelegram = IsAttachedTelegram.InProgress });
+                if (HttpContext.Request.Cookies.TryGetValue("attached_telegram",out string value))
                 {
-                    var isAttached = isAttachedString == "1" ? IsAttachedTelegram.Yes : IsAttachedTelegram.InProgress;
-                    return View(new AttachTelegramComponentVM() { IsAttachedTelegram = isAttached,RedirectUrl=redirectUrl });
+                    if(value=="true") return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.Yes });
+                    else return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.No });
                 }
-                return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.No });
             }
             return View();
          }
