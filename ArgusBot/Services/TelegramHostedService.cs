@@ -28,7 +28,7 @@ namespace ArgusBot.Services.Implementations
             _cancellationTelegramClientTokenSrc = new CancellationTokenSource();
 
             _host = configuration.GetSection("BotConfiguration").GetValue<string>("HostAddress");
-            _botToken = configuration.GetSection("BotConfiguration").GetValue<string>("BotToken");
+            _botToken = configuration.GetValue<string>("bot-token");
 
             _useLongPoll = configuration.GetValue<bool>("useLongPollingForTgBot");
         }
@@ -54,14 +54,15 @@ namespace ArgusBot.Services.Implementations
         {
             if (_useLongPoll)
             {
-                _logger.LogInformation("Start work of telegram bot");
-                _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), _cancellationTelegramClientTokenSrc.Token);
+                _logger.LogInformation("Telegram bot will be started with long poll mode.");
+                _client.StartReceiving(HandleUpdate, HandleError, null, cancellationToken);
             }
             else
             {
                 var webhookAddress = @$"{_host}/bot/{_botToken}";
 
-                _logger.LogInformation("Setting webhook: {webhookAddress}", webhookAddress);
+                _logger.LogInformation("Telegram bot will be started with webhook mode.");
+                _logger.LogInformation("Setting webhook.");
 
                 await _client.SetWebhookAsync(
                     url: webhookAddress,
@@ -79,6 +80,7 @@ namespace ArgusBot.Services.Implementations
                 // Remove webhook upon app shutdown
                 _logger.LogInformation("Removing webhook");
                 await _client.DeleteWebhookAsync(cancellationToken: cancellationToken);
+                _logger.LogInformation("Removed webhook");
             }
 
             _cancellationTelegramClientTokenSrc.Cancel();
