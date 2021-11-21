@@ -3,6 +3,7 @@ using ArgusBot.BLL.Services.Interfaces;
 using ArgusBot.DAL.Repositories.Implementation;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
+using ArgusBot.Services;
 using ArgusBot.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -35,13 +36,16 @@ namespace ArgusBot
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
+
             services.AddHttpClient("tgclient").AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(Configuration["bot-token"]));
+            services.AddScoped<HandleUpdateService>();
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISignInService, SignInService>();
+            
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -64,9 +68,14 @@ namespace ArgusBot
 
             app.UseEndpoints(endpoints =>
             {
+                var token = Configuration["bot-token"];
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(name: "tgwebhook",
+                                        pattern: $"bot/{token}",
+                                        new { controller = "Webhook", action = "Post" });
             });
         }
     }
