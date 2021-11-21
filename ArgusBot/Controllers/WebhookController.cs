@@ -11,7 +11,7 @@ namespace ArgusBot.Controllers
         public async Task<IActionResult> Post([FromServices] HandleUpdateService handleUpdateService,
                                               [FromBody] Update update)
         {
-
+            var body = HttpContext.Request.Body;
             await handleUpdateService.EchoAsync(update);
             return Ok();
         }
