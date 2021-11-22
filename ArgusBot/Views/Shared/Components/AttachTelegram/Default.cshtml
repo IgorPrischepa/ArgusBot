@@ -4,13 +4,6 @@
     case ArgusBot.BL.Services.IsAttachedTelegram.No:
         {
             <div class="row mt-2">
-                <a id="attach_btn" class="btn btn-secondary" asp-controller="Account" asp-action="InitiateAttachingTelegramAccount">Attach telegram account</a>
-            </div>
-            break;
-        }
-    case ArgusBot.BL.Services.IsAttachedTelegram.InProgress:
-        {
-            <div class="row mt-2">
                 <h3 class="mb-2">To attach a telegram account click authorization button</h3>
                 @await Html.PartialAsync("TelegramBtnPartialView", Model.RedirectUrl)
             </div>

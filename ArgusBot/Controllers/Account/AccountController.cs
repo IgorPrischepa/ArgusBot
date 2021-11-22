@@ -1,9 +1,9 @@
-﻿using ArgusBot.BL.Services;
-using ArgusBot.BL.Services.Interfaces;
+﻿using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.Models.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ArgusBot.Controllers.Account
@@ -13,17 +13,15 @@ namespace ArgusBot.Controllers.Account
         private readonly IUserService _userService;
         private readonly ISignInService _signInService;
         private readonly IQueryParser _queryParser;
-        private readonly ICookieParser _cookieParser;
-
-        public AccountController(IUserService userService, ISignInService signInService, IConfiguration configuration, IQueryParser queryParser, ICookieParser cookieParser)
+        private readonly IConfiguration _configuration;
+        public AccountController(IUserService userService, ISignInService signInService, IConfiguration configuration, IQueryParser queryParser)
         {
             _userService = userService;
             _signInService = signInService;
-            Configuration = configuration;
+            _configuration = configuration;
             _queryParser = queryParser;
-            _cookieParser = cookieParser;
         }
-        private IConfiguration Configuration { get; }
+
         public IActionResult Index()
         {
             return View();
@@ -32,27 +30,24 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Login()
         {
-            return View(new LoginVM() { RedirectUrl = $"{Configuration["data-auth"]}/Account/LoginByTelegram" });
-        }
-        [HttpGet]
-        public IActionResult InitiateAttachingTelegramAccount()
-        {
-            return ViewComponent("AttachTelegram", new { canBeAttached = true });
+            return View(new LoginVM() { RedirectUrl = $"{_configuration["data-auth"]}/Account/LoginByTelegram" });
         }
         [HttpGet]
         public async Task<IActionResult> AttachTelegramAccount()
         {
-            var queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
-            if (queryColect.VerifyNotNull() &&
+            SortedDictionary<string,string> queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
+            if (queryColect!=null &&
                 queryColect.TryGetValue("id", out string telegramId) &&
                 HttpContext.Request.Cookies.TryGetValue("identifier", out string userIdString))
             {
-                var userId = (Guid)_cookieParser.ParseString<Guid>(userIdString);
-                var isSuccesfull = await _userService.AddTelegramToAccountAsync(userId, telegramId);
-                if (isSuccesfull)
+                if (Guid.TryParse(userIdString, out Guid userId))
                 {
-                    HttpContext.Response.Cookies.Append("attached_telegram", "true");
-                    return RedirectToAction("Index", "Home");
+                    var isSuccesfull = await _userService.AddTelegramToAccountAsync(userId, telegramId);
+                    if (isSuccesfull)
+                    {
+                        HttpContext.Response.Cookies.Append("attached_telegram", "true");
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
             }
             ViewBag.ErrorMessage = "Cannot attach a telegram profile to the current web-account";
@@ -82,7 +77,7 @@ namespace ArgusBot.Controllers.Account
             {
                 ViewBag.ErrorMessage = "Error! The user is not found or the password is incorrect. Please try again.";
 
-                return View(new LoginVM() { RedirectUrl = $"{Configuration["data-auth"]}/Account/AttachTelegramAccount" });
+                return View();
             };
 
             return RedirectToAction("Index", "Home");
@@ -91,7 +86,7 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Registration()
         {
-            return View(new RegistrationViewModel() { RedirectUrl = $"{Configuration["data-auth"]}/Account/LoginByTelegram" });
+            return View(new RegistrationViewModel() { RedirectUrl = $"{_configuration["data-auth"]}/Account/LoginByTelegram" });
         }
 
         [HttpPost]

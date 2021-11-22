@@ -7,24 +7,27 @@ namespace ArgusBot.ViewCompomemts
 {
     public class AttachTelegramViewComponent : ViewComponent
     {
+        private readonly IConfiguration _configuration;
         public AttachTelegramViewComponent(IConfiguration config)
         {
-            Configuration = config;
+            _configuration = config;
         }
-        private IConfiguration Configuration { get; }
-        public IViewComponentResult Invoke(bool canBeAttached)
+        public IViewComponentResult Invoke()
         {
+            var redirectUrl = _configuration["data-auth"];
             if (HttpContext.Request.Cookies.ContainsKey("identifier"))
             {
-                var redirectUrl = Configuration["data-auth"];
-                if (canBeAttached) return View(new AttachTelegramComponentVM() { RedirectUrl = $"{ redirectUrl}/Account/AttachTelegramAccount", IsAttachedTelegram = IsAttachedTelegram.InProgress });
                 if (HttpContext.Request.Cookies.TryGetValue("attached_telegram", out string value))
                 {
-                    if (value == "true") return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.Yes });
-                    else return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, IsAttachedTelegram = IsAttachedTelegram.No });
+                    if (value == "true") 
+                    { 
+                        return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, 
+                                                                      IsAttachedTelegram = IsAttachedTelegram.Yes }); 
+                    }
                 }
             }
-            return View();
+            return View(new AttachTelegramComponentVM() { RedirectUrl = $"{ redirectUrl}/Account/AttachTelegramAccount", 
+                                                         IsAttachedTelegram = IsAttachedTelegram.No });
         }
     }
 }

@@ -67,13 +67,13 @@ namespace ArgusBot.BL.Services.Implementation
             _logger.LogInformation("It`s initialized a process to create a new user by data from telegram");
             User userDb = await usersRepository.GetUserByTelegramAccountAsync(telegramId);
             var userDTO = _mapper.Map<ProfileDTO>(userDb);
-            if (!userDTO.VerifyNotNull(throwException: false))
+            if (userDTO==null)
             {
                 userDTO = new ProfileDTO();
                 userDTO.TelegramId = telegramId;
                 userDTO.Login = userName;
                 var newUser = _mapper.Map<User>(userDTO);
-                if (newUser.VerifyNotNull("It`s happened a error during mapping process!"))
+                if (newUser!=null)
                 {
                     newUser.Password = GenerateRandomPassword();
                     await usersRepository.CreateAsync(newUser);
@@ -99,7 +99,7 @@ namespace ArgusBot.BL.Services.Implementation
             return null;
         }
 
-        public async Task<DTO.ProfileDTO> GetUserByGuidAsync(Guid login)
+        public async Task<ProfileDTO> GetUserByGuidAsync(Guid login)
         {
             User user = await usersRepository.GetUserByIdAsync(login);
 

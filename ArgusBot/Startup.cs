@@ -43,7 +43,6 @@ namespace ArgusBot
             services.AddScoped<IUserService, UserService>().AddLogging(log => log.AddConsole());
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
-            services.AddTransient<ICookieParser, CookieParser>();
             services.AddTransient<IQueryParser, QueryParser>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

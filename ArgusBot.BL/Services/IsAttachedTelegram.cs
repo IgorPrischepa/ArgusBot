@@ -3,7 +3,6 @@
     public enum IsAttachedTelegram
     {
         Yes,
-        InProgress,
         No
     }
 }
