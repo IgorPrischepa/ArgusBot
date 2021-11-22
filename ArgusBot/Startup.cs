@@ -33,7 +33,7 @@ namespace ArgusBot
 
             services.AddHttpContextAccessor();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
@@ -46,7 +46,7 @@ namespace ArgusBot
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISignInService, SignInService>();
-            
+
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

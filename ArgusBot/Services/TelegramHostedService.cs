@@ -55,7 +55,7 @@ namespace ArgusBot.Services.Implementations
             if (_useLongPoll)
             {
                 _logger.LogInformation("Telegram bot will be started with long poll mode.");
-                _client.StartReceiving(HandleUpdate, HandleError, null, cancellationToken);
+                _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), _cancellationTelegramClientTokenSrc.Token);
             }
             else
             {
