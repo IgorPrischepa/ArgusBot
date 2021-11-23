@@ -42,7 +42,7 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public async Task<IActionResult> AttachTelegramAccount()
         {
-            SortedDictionary<string,string> queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
+            Dictionary<string,string> queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
             if (queryColect!=null &&
                 queryColect.TryGetValue("id", out string telegramId) &&
                 HttpContext.Request.Cookies.TryGetValue("identifier", out string userIdString))

@@ -53,7 +53,7 @@ namespace ArgusBot.BL.Services.Implementation
             return false;
         }
 
-        public async Task<bool> AuthenticateByTelegramAccountAsync(SortedDictionary<string, string> queryString)
+        public async Task<bool> AuthenticateByTelegramAccountAsync(Dictionary<string, string> queryString)
         {
             queryString.VerifyNotNull("Collection of query items cannot be null!");
             if (queryString.TryGetValue("id", out string id))
@@ -116,7 +116,7 @@ namespace ArgusBot.BL.Services.Implementation
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
         }
-        private async Task AuthorizeViaTelegram(SortedDictionary<string, string> data, ProfileDTO authorizedUser)
+        private async Task AuthorizeViaTelegram(Dictionary<string, string> data, ProfileDTO authorizedUser)
         {
             var widget = new LoginWidget(_configuration["bot-token"]);
             widget.AllowedTimeOffset = 900;

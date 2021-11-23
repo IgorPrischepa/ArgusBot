@@ -7,9 +7,9 @@ namespace ArgusBot.BL.Services.Implementation
 {
     public class QueryParser : IQueryParser
     {
-        public SortedDictionary<string, string> ParseQueryString(IQueryCollection queryString)
+        public Dictionary<string, string> ParseQueryString(IQueryCollection queryString)
         {
-            var dict = new SortedDictionary<string, string>();
+            var dict = new Dictionary<string, string>();
             queryString.VerifyNotNull("Query string cannot be null!");
             if (queryString.Count > 0)
             {

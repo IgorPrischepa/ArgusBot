@@ -5,6 +5,6 @@ namespace ArgusBot.BL.Services.Interfaces
 {
     public interface IQueryParser
     {
-        SortedDictionary<string, string> ParseQueryString(IQueryCollection queryString);
+       Dictionary<string, string> ParseQueryString(IQueryCollection queryString);
     }
 }
