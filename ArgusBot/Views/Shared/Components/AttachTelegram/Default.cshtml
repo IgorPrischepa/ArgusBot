@@ -1,0 +1,16 @@
+﻿@model AttachTelegramComponentVM
+@switch (Model.IsAttachedTelegram)
+{
+    case ArgusBot.BL.Services.IsAttachedTelegram.No:
+        {
+            <div class="row mt-2">
+                <h3 class="mb-2">To attach a telegram account click authorization button</h3>
+                @await Html.PartialAsync("TelegramBtnPartialView", Model.RedirectUrl)
+            </div>
+            break;
+        }
+    case ArgusBot.BL.Services.IsAttachedTelegram.Yes:
+        {
+            break;
+        }
+}

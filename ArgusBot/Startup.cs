@@ -1,5 +1,6 @@
-using ArgusBot.BLL.Services.Implementation;
-using ArgusBot.BLL.Services.Interfaces;
+using ArgusBot.BL.DTO.Mapper;
+using ArgusBot.BL.Services.Implementation;
+using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.DAL.Repositories.Implementation;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
@@ -38,10 +39,11 @@ namespace ArgusBot
             services.AddHttpClient("tgclient").AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(Configuration["bot-token"]));
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
-
-            services.AddScoped<IUserService, UserService>();
+            services.AddAutoMapper(typeof(UserMapper));
+            services.AddScoped<IUserService, UserService>().AddLogging(log => log.AddConsole());
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ISignInService, SignInService>();
+            services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
+            services.AddTransient<IQueryParser, QueryParser>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

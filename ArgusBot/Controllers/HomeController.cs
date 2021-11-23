@@ -1,6 +1,7 @@
 ﻿using ArgusBot.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 
 
@@ -9,6 +10,11 @@ namespace ArgusBot.Controllers
     public class HomeController : Controller
     {
 
+        public HomeController(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        private IConfiguration Configuration { get; }
         [Authorize]
         public IActionResult Index()
         {

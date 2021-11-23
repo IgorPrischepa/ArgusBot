@@ -20,5 +20,6 @@ namespace ArgusBot.Models.Account
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
         public string PasswordConfirm { get; set; }
+        public string RedirectUrl { get; set; }
     }
 }
