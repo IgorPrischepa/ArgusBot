@@ -2,6 +2,7 @@
 using ArgusBot.Models.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,12 +15,18 @@ namespace ArgusBot.Controllers.Account
         private readonly ISignInService _signInService;
         private readonly IQueryParser _queryParser;
         private readonly IConfiguration _configuration;
-        public AccountController(IUserService userService, ISignInService signInService, IConfiguration configuration, IQueryParser queryParser)
+        private readonly ILogger<AccountController> _logger;
+        public AccountController(IUserService userService, 
+                                 ISignInService signInService, 
+                                 IConfiguration configuration, 
+                                 IQueryParser queryParser, 
+                                 ILogger<AccountController> logger)
         {
             _userService = userService;
             _signInService = signInService;
             _configuration = configuration;
             _queryParser = queryParser;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -49,7 +56,12 @@ namespace ArgusBot.Controllers.Account
                         return RedirectToAction("Index", "Home");
                     }
                 }
+                else
+                {
+                    _logger.LogError("Invalid format of Guid string");
+                }
             }
+            _logger.LogError("Cannot attach telegram account to this user!");
             ViewBag.ErrorMessage = "Cannot attach a telegram profile to the current web-account";
             return View();
         }
