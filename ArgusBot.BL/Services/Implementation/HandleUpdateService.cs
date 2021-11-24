@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ArgusBot.BL.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -6,9 +7,9 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace ArgusBot.Services
+namespace ArgusBot.BL.Services.Implementation
 {
-    public class HandleUpdateService
+    public class HandleUpdateService : IHandleUpdateService
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger<HandleUpdateService> _logger;
@@ -54,6 +55,12 @@ namespace ArgusBot.Services
                 return;
 
             await _botClient.SendTextMessageAsync(message.Chat.Id, message.Text);
+        }
+
+        public Task ExceptionFromUpdateHandlerAsync(Update update)
+        {
+            _logger.LogInformation("Unknown update type: {updateType}", update.Type);
+            return Task.CompletedTask;
         }
 
         private Task UnknownUpdateHandlerAsync(Update update)
