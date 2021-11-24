@@ -18,30 +18,23 @@ namespace ArgusBot.Services.Implementations
         private readonly ITelegramBotClient _client;
         private readonly ILogger<TelegramHostedService> _logger;
         private CancellationTokenSource _cancellationTelegramClientTokenSrc;
-        //private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
 
         private readonly string _host;
         private readonly string _botToken;
         private readonly bool _useLongPoll;
 
-        private readonly IHandleUpdateService _handleUpdateService;
 
         public TelegramHostedService(ITelegramBotClient client, ILogger<TelegramHostedService> logger, IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _client = client;
             _logger = logger;
+            _serviceProvider = serviceProvider;
+
             _cancellationTelegramClientTokenSrc = new CancellationTokenSource();
             _host = configuration.GetValue<string>("bot-host");
             _botToken = configuration.GetValue<string>("bot-token");
             _useLongPoll = configuration.GetValue<bool>("useLongPollingForTgBot");
-
-
-            IServiceScope scope = serviceProvider.CreateScope();
-            IHandleUpdateService handleUpdateService =
-                scope.ServiceProvider.GetRequiredService<IHandleUpdateService>();
-
-            _handleUpdateService = handleUpdateService;
-
         }
 
         private async Task HandleUpdate(ITelegramBotClient client, Update update, CancellationToken cancelToken)
@@ -50,14 +43,27 @@ namespace ArgusBot.Services.Implementations
 
             _logger.LogInformation("Message was received!");
 
-            await _handleUpdateService.EchoAsync(update);
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                IHandleUpdateService handleUpdateService =
+                    scope.ServiceProvider.GetRequiredService<IHandleUpdateService>();
+
+
+                await handleUpdateService.EchoAsync(update);
+            }
         }
 
         private async Task HandleError(ITelegramBotClient client, Exception exception, CancellationToken cancelToken)
         {
             cancelToken.ThrowIfCancellationRequested();
 
-            await _handleUpdateService.HandleErrorAsync(exception);
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                IHandleUpdateService handleUpdateService =
+                    scope.ServiceProvider.GetRequiredService<IHandleUpdateService>();
+
+                await handleUpdateService.HandleErrorAsync(exception);
+            }
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -109,7 +115,6 @@ namespace ArgusBot.Services.Implementations
 
         private async Task RemoveWebhook(CancellationToken cancellationToken)
         {
-            // Remove webhook upon app shutdown
             _logger.LogInformation("Removing webhook");
             await _client.DeleteWebhookAsync(cancellationToken: cancellationToken);
             _logger.LogInformation("Removed webhook");
