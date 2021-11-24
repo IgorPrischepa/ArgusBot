@@ -51,9 +51,22 @@ namespace ArgusBot.Services.Implementations
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+           
             if (_useLongPoll)
             {
                 _logger.LogInformation("Telegram bot will be started with long poll mode.");
+
+                _logger.LogInformation("Checking for the disabling of a web hook.");
+
+                var info = await _client.GetWebhookInfoAsync(cancellationToken);
+
+                if (info.Url != string.Empty)
+                {
+                    _logger.LogInformation("The webhook has not been removed.");
+
+                    await RemoveWebhook(cancellationToken);
+                }
+
                 _client.StartReceiving(new DefaultUpdateHandler(HandleUpdate, HandleError), _cancellationTelegramClientTokenSrc.Token);
             }
             else
@@ -61,6 +74,7 @@ namespace ArgusBot.Services.Implementations
                 var webhookAddress = @$"{_host}/bot/{_botToken}";
 
                 _logger.LogInformation("Telegram bot will be started with webhook mode.");
+
                 _logger.LogInformation("Setting webhook.");
 
                 await _client.SetWebhookAsync(
@@ -76,13 +90,18 @@ namespace ArgusBot.Services.Implementations
 
             if (!_useLongPoll)
             {
-                // Remove webhook upon app shutdown
-                _logger.LogInformation("Removing webhook");
-                await _client.DeleteWebhookAsync(cancellationToken: cancellationToken);
-                _logger.LogInformation("Removed webhook");
+                await RemoveWebhook(cancellationToken);
             }
 
             _cancellationTelegramClientTokenSrc.Cancel();
+        }
+
+        private async Task RemoveWebhook(CancellationToken cancellationToken)
+        {
+            // Remove webhook upon app shutdown
+            _logger.LogInformation("Removing webhook");
+            await _client.DeleteWebhookAsync(cancellationToken: cancellationToken);
+            _logger.LogInformation("Removed webhook");
         }
     }
 }
