@@ -4,7 +4,6 @@ using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.DAL.Repositories.Implementation;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
-using ArgusBot.Services;
 using ArgusBot.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
