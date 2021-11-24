@@ -27,9 +27,8 @@ namespace ArgusBot.Services.Implementations
             _logger = logger;
             _cancellationTelegramClientTokenSrc = new CancellationTokenSource();
 
-            _host = configuration.GetSection("BotConfiguration").GetValue<string>("HostAddress");
+            _host = configuration.GetValue<string>("bot-host");
             _botToken = configuration.GetValue<string>("bot-token");
-
             _useLongPoll = configuration.GetValue<bool>("useLongPollingForTgBot");
         }
 
