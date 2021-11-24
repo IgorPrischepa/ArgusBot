@@ -40,7 +40,7 @@ namespace ArgusBot
 
 
             services.AddHttpClient("tgclient").AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(Configuration["bot-token"]));
-            services.AddScoped<HandleUpdateService>();
+            services.AddScoped<IHandleUpdateService, HandleUpdateService>();
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
             services.AddAutoMapper(typeof(UserMapper));
