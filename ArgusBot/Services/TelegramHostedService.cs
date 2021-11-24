@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ArgusBot.BL.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,42 +18,51 @@ namespace ArgusBot.Services.Implementations
         private readonly ITelegramBotClient _client;
         private readonly ILogger<TelegramHostedService> _logger;
         private CancellationTokenSource _cancellationTelegramClientTokenSrc;
+        //private readonly IServiceProvider _serviceProvider;
 
         private readonly string _host;
         private readonly string _botToken;
         private readonly bool _useLongPoll;
 
-        public TelegramHostedService(ITelegramBotClient client, ILogger<TelegramHostedService> logger, IConfiguration configuration)
+        private readonly IHandleUpdateService _handleUpdateService;
+
+        public TelegramHostedService(ITelegramBotClient client, ILogger<TelegramHostedService> logger, IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _client = client;
             _logger = logger;
             _cancellationTelegramClientTokenSrc = new CancellationTokenSource();
-
             _host = configuration.GetValue<string>("bot-host");
             _botToken = configuration.GetValue<string>("bot-token");
             _useLongPoll = configuration.GetValue<bool>("useLongPollingForTgBot");
+
+
+            IServiceScope scope = serviceProvider.CreateScope();
+            IHandleUpdateService handleUpdateService =
+                scope.ServiceProvider.GetRequiredService<IHandleUpdateService>();
+
+            _handleUpdateService = handleUpdateService;
+
         }
 
         private async Task HandleUpdate(ITelegramBotClient client, Update update, CancellationToken cancelToken)
         {
             cancelToken.ThrowIfCancellationRequested();
-            if (update.Type == UpdateType.Message)
-            {
-                _logger.LogInformation("Message was received!");
-                await _client.SendTextMessageAsync(update.Message.Chat.Id, update.Message.Text);
-            }
+
+            _logger.LogInformation("Message was received!");
+
+            await _handleUpdateService.EchoAsync(update);
         }
 
-        private Task HandleError(ITelegramBotClient client, Exception exception, CancellationToken cancelToken)
+        private async Task HandleError(ITelegramBotClient client, Exception exception, CancellationToken cancelToken)
         {
             cancelToken.ThrowIfCancellationRequested();
-            _logger.LogError(exception.Message);
-            return Task.CompletedTask;
+
+            await _handleUpdateService.HandleErrorAsync(exception);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-           
+
             if (_useLongPoll)
             {
                 _logger.LogInformation("Telegram bot will be started with long poll mode.");
