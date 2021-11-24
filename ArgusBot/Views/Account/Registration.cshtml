@@ -1,4 +1,4 @@
-﻿@model ArgusBot.Models.Account.RegistrationViewModel
+﻿@model RegistrationViewModel
 <h2>Creating new account</h2>
 
 @if (ViewBag.ErrorMessage != null)
@@ -27,5 +27,8 @@
     </div>
     <div>
         <input class="btn btn-primary" type="submit" value="Complete registration" />
+    </div>
+    <div class="mt-2">
+        @await Html.PartialAsync("TelegramBtnPartialView",Model.RedirectUrl)
     </div>
 </form>

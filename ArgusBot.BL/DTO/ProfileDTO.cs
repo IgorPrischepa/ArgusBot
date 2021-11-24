@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace ArgusBot.BLL.DTO
+namespace ArgusBot.BL.DTO
 {
-    public class Profile
+    public class ProfileDTO
     {
         public Guid UserGuid { get; set; }
 
