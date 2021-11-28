@@ -16,10 +16,10 @@ namespace ArgusBot.Controllers.Account
         private readonly IQueryParser _queryParser;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AccountController> _logger;
-        public AccountController(IUserService userService, 
-                                 ISignInService signInService, 
-                                 IConfiguration configuration, 
-                                 IQueryParser queryParser, 
+        public AccountController(IUserService userService,
+                                 ISignInService signInService,
+                                 IConfiguration configuration,
+                                 IQueryParser queryParser,
                                  ILogger<AccountController> logger)
         {
             _userService = userService;
@@ -42,8 +42,8 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public async Task<IActionResult> AttachTelegramAccount()
         {
-            Dictionary<string,string> queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
-            if (queryColect!=null &&
+            Dictionary<string, string> queryColect = _queryParser.ParseQueryString(HttpContext.Request.Query);
+            if (queryColect != null &&
                 queryColect.TryGetValue("id", out string telegramId) &&
                 HttpContext.Request.Cookies.TryGetValue("identifier", out string userIdString))
             {

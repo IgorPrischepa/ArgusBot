@@ -19,15 +19,21 @@ namespace ArgusBot.ViewCompomemts
             {
                 if (HttpContext.Request.Cookies.TryGetValue("attached_telegram", out string value))
                 {
-                    if (value == "true") 
-                    { 
-                        return View(new AttachTelegramComponentVM() { RedirectUrl = redirectUrl, 
-                                                                      IsAttachedTelegram = IsAttachedTelegram.Yes }); 
+                    if (value == "true")
+                    {
+                        return View(new AttachTelegramComponentVM()
+                        {
+                            RedirectUrl = redirectUrl,
+                            IsAttachedTelegram = IsAttachedTelegram.Yes
+                        });
                     }
                 }
             }
-            return View(new AttachTelegramComponentVM() { RedirectUrl = $"{ redirectUrl}/Account/AttachTelegramAccount", 
-                                                         IsAttachedTelegram = IsAttachedTelegram.No });
+            return View(new AttachTelegramComponentVM()
+            {
+                RedirectUrl = $"{ redirectUrl}/Account/AttachTelegramAccount",
+                IsAttachedTelegram = IsAttachedTelegram.No
+            });
         }
     }
 }

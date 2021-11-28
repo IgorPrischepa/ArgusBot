@@ -23,6 +23,7 @@ namespace ArgusBot
         {
             Configuration = configuration;
         }
+
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
@@ -32,11 +33,13 @@ namespace ArgusBot
 
             services.AddHttpContextAccessor();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
+
             services.AddHttpClient("tgclient").AddTypedClient<ITelegramBotClient>(client => new TelegramBotClient(Configuration["bot-token"]));
+            services.AddScoped<IHandleUpdateService, HandleUpdateService>();
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
             services.AddAutoMapper(typeof(UserMapper));
@@ -44,6 +47,8 @@ namespace ArgusBot
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
             services.AddTransient<IQueryParser, QueryParser>();
+            services.AddScoped<ISignInService, SignInService>();
+
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -66,9 +71,14 @@ namespace ArgusBot
 
             app.UseEndpoints(endpoints =>
             {
+                var token = Configuration["bot-token"];
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(name: "tgwebhook",
+                                        pattern: $"bot/{token}",
+                                        new { controller = "Webhook", action = "Post" });
             });
         }
     }
