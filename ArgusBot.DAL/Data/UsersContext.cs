@@ -7,6 +7,8 @@ namespace ArgusBot.Data
     {
         public DbSet<User> Users { get; set; }
 
+        public DbSet<CheckList> CheckLists { get; set; }
+
         public UsersContext(DbContextOptions<UsersContext> options) : base(options)
         {
         }
