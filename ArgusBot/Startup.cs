@@ -47,7 +47,9 @@ namespace ArgusBot
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<ICheckListRepository, CheckListRepository>();
-            services.AddScoped<ICheckListServiceInterface, CheckService>();
+            services.AddScoped<IGroupsRepository, GroupsRepository>();
+            services.AddScoped<ICheckListService, CheckService>();
+            services.AddScoped<IGroupService, GroupService>();
 
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
             services.AddTransient<IQueryParser, QueryParser>();

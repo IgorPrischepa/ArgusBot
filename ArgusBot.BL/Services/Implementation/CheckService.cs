@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ArgusBot.BL.Services.Implementation
 {
-    public class CheckService : ICheckListServiceInterface
+    public class CheckService : ICheckListService
     {
         private readonly ICheckListRepository checkList;
 

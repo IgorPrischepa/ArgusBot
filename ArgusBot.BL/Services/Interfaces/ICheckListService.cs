@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ArgusBot.BL.Services.Interfaces
 {
-    public interface ICheckListServiceInterface
+    public interface ICheckListService
     {
         public Task CreateCheckAsync(Check checkItem);
 

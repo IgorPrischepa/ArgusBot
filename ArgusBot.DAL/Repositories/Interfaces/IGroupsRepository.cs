@@ -1,9 +1,10 @@
 ﻿using ArgusBot.DAL.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ArgusBot.DAL.Repositories.Interfaces
 {
-    public interface IGroupsRepositoryInterface
+    public interface IGroupsRepository
     {
         public Task AddGroupAsync(Group group);
 
@@ -14,6 +15,10 @@ namespace ArgusBot.DAL.Repositories.Interfaces
         public Task AddAdminToGroupAsync(int groupId, int userId);
 
         public Task DeleteAdminFromGroupAsync(int groupId, int userId);
+
+        public Task<List<Group>> GetAllGroupAsync();
+
+        public Task<List<Group>> GetAllGroupWithAdminsAsync();
 
         Task SaveChangesAsync();
     }

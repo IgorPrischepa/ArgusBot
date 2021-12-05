@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ArgusBot.DAL.Repositories.Implementation
 {
-    public class GroupsRepository : IGroupsRepositoryInterface
+    public class GroupsRepository : IGroupsRepository
     {
         private readonly MainContext db;
 
