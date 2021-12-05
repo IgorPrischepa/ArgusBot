@@ -3,6 +3,7 @@ using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ArgusBot.DAL.Repositories.Implementation
@@ -56,6 +57,16 @@ namespace ArgusBot.DAL.Repositories.Implementation
             Group group = await GetGroupByIdAsync(groupId);
             db.Groups.Remove(group);
             await SaveChangesAsync();
+        }
+
+        public Task<List<Group>> GetAllGroupAsync()
+        {
+            return db.Groups.ToListAsync();
+        }
+
+        public Task<List<Group>> GetAllGroupWithAdminsAsync()
+        {
+            return db.Groups.Include(g => g.GroupAdmins).ToListAsync();
         }
 
         public async Task<Group> GetGroupByIdAsync(int groupId)
