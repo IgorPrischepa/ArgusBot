@@ -26,14 +26,20 @@ namespace ArgusBot.BL.Services.Implementation
             }
         }
 
-        public async Task CreateCheckAsync(Check checkItem)
+        public async Task CreateCheckAsync(int telegramGroupId, int telegramUserId, string correctAnswer)
         {
-            if (checkItem is null) throw new ArgumentNullException(nameof(checkItem));
-            if (checkItem.CorrectAnswer is null || checkItem.CorrectAnswer == string.Empty) throw new ArgumentException("Answer can't be empty or null");
-            if (checkItem.UserId == 0 || checkItem.UserId < 0) throw new ArgumentException("User id can't be zero or negative");
-            if (checkItem.GroupId == 0 || checkItem.GroupId < 0) throw new ArgumentException("Group id can't be zero or negative");
+            if (correctAnswer is null || correctAnswer == string.Empty) throw new ArgumentException("Answer can't be empty or null");
+            if (telegramUserId == 0 || telegramUserId < 0) throw new ArgumentException("User id can't be zero or negative");
+            if (telegramGroupId == 0 || telegramGroupId < 0) throw new ArgumentException("Group id can't be zero or negative");
 
-            await checkList.CreateNewAsync(checkItem);
+            Check check = new Check
+            {
+                CorrectAnswer = correctAnswer,
+                GroupId = telegramGroupId,
+                UserId = telegramUserId
+            };
+
+            await checkList.CreateNewAsync(check);
         }
 
         public async Task DeleteCheckForUser(int userId)
