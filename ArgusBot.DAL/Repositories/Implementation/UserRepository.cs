@@ -9,9 +9,9 @@ namespace ArgusBot.DAL.Repositories.Implementation
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UsersContext db;
+        private readonly MainContext db;
 
-        public UserRepository(UsersContext usersContext)
+        public UserRepository(MainContext usersContext)
         {
             db = usersContext;
         }

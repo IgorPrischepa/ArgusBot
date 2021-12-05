@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ArgusBot.Data
 {
-    public class UsersContext : DbContext
+    public class MainContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
-        public DbSet<CheckList> CheckLists { get; set; }
+        public DbSet<Check> CheckList { get; set; }
 
-        public UsersContext(DbContextOptions<UsersContext> options) : base(options)
+        public MainContext(DbContextOptions<MainContext> options) : base(options)
         {
         }
 

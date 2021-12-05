@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ArgusBot.DAL.Models
 {
     [Index(nameof(GroupId), nameof(UserId))]
-    public class CheckList
+    public class Check
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,7 +18,7 @@ namespace ArgusBot.DAL.Models
         [Required]
         public int UserId { get; set; }
 
-        public string QuestionMessageId { get; set; }
+        public int QuestionMessageId { get; set; }
 
         [Required]
         public string CorrectAnswer { get; set; }

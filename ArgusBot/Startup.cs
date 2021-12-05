@@ -29,7 +29,7 @@ namespace ArgusBot
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<UsersContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<MainContext>(options => options.UseSqlServer(connection));
 
             services.AddHttpContextAccessor();
 
@@ -45,6 +45,10 @@ namespace ArgusBot
             services.AddAutoMapper(typeof(UserMapper));
             services.AddScoped<IUserService, UserService>().AddLogging(log => log.AddConsole());
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<ICheckListRepository, CheckListRepository>();
+            services.AddScoped<ICheckListServiceInterface, CheckService>();
+
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
             services.AddTransient<IQueryParser, QueryParser>();
             services.AddScoped<ISignInService, SignInService>();

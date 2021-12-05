@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ArgusBot.DAL.Migrations
 {
-    [DbContext(typeof(UsersContext))]
+    [DbContext(typeof(MainContext))]
     partial class UsersContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
