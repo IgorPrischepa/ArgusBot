@@ -16,12 +16,12 @@ namespace ArgusBot.BL.Services.Implementation
             checkList = checkListRepository;
         }
 
-        public async Task ChangeCheckStatusForUserAsync(int userId, StatusTypes status)
+        public async Task ChangeCheckStatusForUserAsync(int userId, int status)
         {
             var userToUpdate = await checkList.GetItemByUserIdAsync(userId);
             if (userToUpdate != null)
             {
-                userToUpdate.Status = status;
+                userToUpdate.Status = (StatusTypes)status;
                 await checkList.UpdateAsync(userToUpdate);
             }
         }
@@ -65,6 +65,11 @@ namespace ArgusBot.BL.Services.Implementation
         public async Task<ICollection<Check>> GetAllFromCheckListAsync()
         {
             return await checkList.GetAllCheckListsAsync();
+        }
+
+        public async Task<List<Check>> GetCheckListWithStatus(int status)
+        {
+            return await checkList.GetCheckByStatusAsync((StatusTypes)status);
         }
     }
 }

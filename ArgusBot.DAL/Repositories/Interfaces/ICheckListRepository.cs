@@ -10,6 +10,8 @@ namespace ArgusBot.DAL.Repositories.Interfaces
 
         Task<Check> GetItemByUserIdAsync(int userId);
 
+        Task<List<Check>> GetCheckByStatusAsync(StatusTypes status);
+
         Task CreateNewAsync(Check item);
 
         Task UpdateAsync(Check item);

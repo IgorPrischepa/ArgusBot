@@ -8,11 +8,13 @@ namespace ArgusBot.BL.Services.Interfaces
     {
         public Task CreateCheckAsync(int telegramGroupId, int telegramUserId, string correctAnswer);
 
-        public Task ChangeCheckStatusForUserAsync(int userId, StatusTypes status);
+        public Task ChangeCheckStatusForUserAsync(int userId, int status);
 
         public Task DeleteCheckForUser(int userId);
 
         public Task UpdateQuestionMsgId(int userId, int messageId);
+
+        public Task<List<Check>> GetCheckListWithStatus(int status);
 
         public Task<ICollection<Check>> GetAllFromCheckListAsync();
     }

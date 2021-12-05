@@ -42,6 +42,8 @@ namespace ArgusBot
             services.AddScoped<IHandleUpdateService, HandleUpdateService>();
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
+            services.AddHostedService<CheckListCleanerService>();
+
             services.AddAutoMapper(typeof(UserMapper));
             services.AddScoped<IUserService, UserService>().AddLogging(log => log.AddConsole());
             services.AddScoped<IUserRepository, UserRepository>();

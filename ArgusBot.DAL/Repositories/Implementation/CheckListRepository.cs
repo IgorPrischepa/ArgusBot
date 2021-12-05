@@ -3,6 +3,7 @@ using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ArgusBot.DAL.Repositories.Implementation
@@ -35,6 +36,11 @@ namespace ArgusBot.DAL.Repositories.Implementation
         public async Task<ICollection<Check>> GetAllCheckListsAsync()
         {
             return await db.CheckList.ToListAsync();
+        }
+
+        public async Task<List<Check>> GetCheckByStatusAsync(StatusTypes status)
+        {
+            return await db.CheckList.Where(x => x.Status.Equals(status)).ToListAsync();
         }
 
         public async Task<Check> GetItemByUserIdAsync(int userId)
