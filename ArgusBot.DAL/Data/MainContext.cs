@@ -9,6 +9,8 @@ namespace ArgusBot.Data
 
         public DbSet<Check> CheckList { get; set; }
 
+        public DbSet<Group> Groups { get; set; }
+
         public MainContext(DbContextOptions<MainContext> options) : base(options)
         {
         }
