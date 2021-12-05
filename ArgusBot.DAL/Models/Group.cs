@@ -15,6 +15,6 @@ namespace ArgusBot.DAL.Models
 
         public string GroupName { get; set; }
 
-        public ICollection<GroupAdmin> GroupAdmins { get; set; }
+        public List<GroupAdmin> GroupAdmins { get; set; }
     }
 }

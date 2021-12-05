@@ -11,6 +11,8 @@ namespace ArgusBot.Data
 
         public DbSet<Group> Groups { get; set; }
 
+        public DbSet<GroupAdmin> GroupAdmins { get; set; }
+
         public MainContext(DbContextOptions<MainContext> options) : base(options)
         {
         }

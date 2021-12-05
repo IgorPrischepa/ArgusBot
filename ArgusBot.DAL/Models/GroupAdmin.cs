@@ -10,10 +10,11 @@ namespace ArgusBot.DAL.Models
 {
     public class GroupAdmin
     {
-
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public int UserId { get; set; }
+        public int TelegramUserId { get; set; }
 
         public int GroupId { get; set; }
 
