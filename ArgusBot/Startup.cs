@@ -42,7 +42,7 @@ namespace ArgusBot
             services.AddScoped<IHandleUpdateService, HandleUpdateService>();
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
-            services.AddHostedService<CheckListCleanerService>();
+            
 
             services.AddAutoMapper(typeof(UserMapper));
             services.AddScoped<IUserService, UserService>().AddLogging(log => log.AddConsole());
@@ -56,6 +56,8 @@ namespace ArgusBot
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
             services.AddTransient<IQueryParser, QueryParser>();
             services.AddScoped<ISignInService, SignInService>();
+
+            services.AddHostedService<CheckListCleanerService>().AddLogging(log => log.AddConsole());
 
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
