@@ -12,9 +12,9 @@ namespace ArgusBot.DAL.Repositories.Interfaces
 
         public Task<Group> GetGroupByIdAsync(int groupId);
 
-        public Task AddAdminToGroupAsync(int groupId, int userId);
+        public Task AddAdminToGroupAsync(int groupId, long userId);
 
-        public Task DeleteAdminFromGroupAsync(int groupId, int userId);
+        public Task DeleteAdminFromGroupAsync(int groupId, long userId);
 
         public Task<List<Group>> GetAllGroupAsync();
 

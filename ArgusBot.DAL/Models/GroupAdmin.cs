@@ -14,7 +14,7 @@ namespace ArgusBot.DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public int TelegramUserId { get; set; }
+        public long TelegramUserId { get; set; }
 
         public int GroupId { get; set; }
 

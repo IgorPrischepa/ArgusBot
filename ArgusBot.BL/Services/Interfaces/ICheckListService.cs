@@ -6,15 +6,15 @@ namespace ArgusBot.BL.Services.Interfaces
 {
     public interface ICheckListService
     {
-        public Task CreateCheckAsync(int telegramGroupId, int telegramUserId, string correctAnswer);
+        public Task CreateCheckAsync(int telegramGroupId, long telegramUserId, string correctAnswer);
 
-        public Task ChangeCheckStatusForUserAsync(int userId, int status);
+        public Task ChangeCheckStatusForUserAsync(long userId, byte status);
 
-        public Task DeleteCheckForUser(int userId);
+        public Task DeleteCheckForUser(long userId);
 
-        public Task UpdateQuestionMsgId(int userId, int messageId);
+        public Task UpdateQuestionMsgId(long userId, int messageId);
 
-        public Task<List<Check>> GetCheckListWithStatus(int status);
+        public Task<List<Check>> GetCheckListWithStatus(byte status);
 
         public Task<ICollection<Check>> GetAllFromCheckListAsync();
     }

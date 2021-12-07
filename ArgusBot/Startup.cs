@@ -56,6 +56,7 @@ namespace ArgusBot
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
             services.AddTransient<IQueryParser, QueryParser>();
             services.AddScoped<ISignInService, SignInService>();
+            services.AddScoped<ICaptchaService, CaptchaService>();
 
             services.AddHostedService<CheckListCleanerService>().AddLogging(log => log.AddConsole());
 

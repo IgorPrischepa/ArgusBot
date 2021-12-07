@@ -8,7 +8,7 @@ namespace ArgusBot.DAL.Repositories.Interfaces
     {
         Task<ICollection<Check>> GetAllCheckListsAsync();
 
-        Task<Check> GetItemByUserIdAsync(int userId);
+        Task<Check> GetItemByUserIdAsync(long userId);
 
         Task<List<Check>> GetCheckByStatusAsync(StatusTypes status);
 
@@ -16,7 +16,7 @@ namespace ArgusBot.DAL.Repositories.Interfaces
 
         Task UpdateAsync(Check item);
 
-        Task DeleteAsync(int userId);
+        Task DeleteAsync(long userId);
 
         Task SaveAsync();
     }

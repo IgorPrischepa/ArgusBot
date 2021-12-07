@@ -16,7 +16,7 @@ namespace ArgusBot.BL.Services.Implementation
             checkList = checkListRepository;
         }
 
-        public async Task ChangeCheckStatusForUserAsync(int userId, int status)
+        public async Task ChangeCheckStatusForUserAsync(long userId, byte status)
         {
             var userToUpdate = await checkList.GetItemByUserIdAsync(userId);
             if (userToUpdate != null)
@@ -26,7 +26,7 @@ namespace ArgusBot.BL.Services.Implementation
             }
         }
 
-        public async Task CreateCheckAsync(int telegramGroupId, int telegramUserId, string correctAnswer)
+        public async Task CreateCheckAsync(int telegramGroupId, long telegramUserId, string correctAnswer)
         {
             if (correctAnswer is null || correctAnswer == string.Empty) throw new ArgumentException("Answer can't be empty or null");
             if (telegramUserId == 0 || telegramUserId < 0) throw new ArgumentException("User id can't be zero or negative");
@@ -42,13 +42,13 @@ namespace ArgusBot.BL.Services.Implementation
             await checkList.CreateNewAsync(check);
         }
 
-        public async Task DeleteCheckForUser(int userId)
+        public async Task DeleteCheckForUser(long userId)
         {
             if (userId == 0 || userId < 0) throw new ArgumentException("User id can't be zero or negative");
             await checkList.DeleteAsync(userId);
         }
 
-        public async Task UpdateQuestionMsgId(int userId, int messageId)
+        public async Task UpdateQuestionMsgId(long userId, int messageId)
         {
             if (userId == 0 || userId < 0) throw new ArgumentException("User id can't be zero or negative");
             if (messageId == 0 || messageId < 0) throw new ArgumentException("Message id can't be zero or negative");
@@ -67,7 +67,7 @@ namespace ArgusBot.BL.Services.Implementation
             return await checkList.GetAllCheckListsAsync();
         }
 
-        public async Task<List<Check>> GetCheckListWithStatus(int status)
+        public async Task<List<Check>> GetCheckListWithStatus(byte status)
         {
             return await checkList.GetCheckByStatusAsync((StatusTypes)status);
         }

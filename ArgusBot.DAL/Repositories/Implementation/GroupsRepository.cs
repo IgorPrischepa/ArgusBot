@@ -17,7 +17,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
             db = mainContext;
         }
 
-        public async Task AddAdminToGroupAsync(int groupId, int userId)
+        public async Task AddAdminToGroupAsync(int groupId, long userId)
         {
             Group group = await db.Groups.FirstOrDefaultAsync(g => g.GroupId.Equals(groupId));
             if (group is not null)
@@ -42,7 +42,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
             }
         }
 
-        public async Task DeleteAdminFromGroupAsync(int groupId, int userId)
+        public async Task DeleteAdminFromGroupAsync(int groupId, long userId)
         {
             GroupAdmin groupAdmin = await db.GroupAdmins.FirstOrDefaultAsync(ga => ga.GroupId.Equals(groupId) && ga.TelegramUserId.Equals(userId));
             if (groupAdmin == null)

@@ -23,7 +23,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
             await SaveAsync();
         }
 
-        public async Task DeleteAsync(int userId)
+        public async Task DeleteAsync(long userId)
         {
             var itemToDelete = db.CheckList.FirstOrDefaultAsync(check => check.UserId.Equals(userId));
             if (itemToDelete is not null)
@@ -43,7 +43,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
             return await db.CheckList.Where(x => x.Status.Equals(status)).ToListAsync();
         }
 
-        public async Task<Check> GetItemByUserIdAsync(int userId)
+        public async Task<Check> GetItemByUserIdAsync(long userId)
         {
             return await db.CheckList.FirstOrDefaultAsync(u => u.UserId == userId);
         }

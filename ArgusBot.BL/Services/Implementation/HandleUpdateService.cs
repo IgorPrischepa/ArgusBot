@@ -13,11 +13,13 @@ namespace ArgusBot.BL.Services.Implementation
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger<HandleUpdateService> _logger;
+        private readonly ICaptchaService _captchaService;
 
-        public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger)
+        public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger, ICaptchaService captchaService)
         {
             _botClient = botClient;
             _logger = logger;
+            _captchaService = captchaService;
         }
 
         public async Task EchoAsync(Update update)
@@ -50,6 +52,10 @@ namespace ArgusBot.BL.Services.Implementation
 
         private async Task BotOnMessageReceived(Message message)
         {
+            if(message.NewChatMembers!=null && message.NewChatMembers.Length > 0)
+            {
+                
+            }
             _logger.LogInformation("Receive message type: {messageType}", message.Type);
             if (message.Type != MessageType.Text)
                 return;
