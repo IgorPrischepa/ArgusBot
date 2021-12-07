@@ -26,7 +26,7 @@ namespace ArgusBot.BL.Services.Implementation
             }
         }
 
-        public async Task CreateCheckAsync(int telegramGroupId, long telegramUserId, string correctAnswer)
+        public async Task CreateCheckAsync(long telegramGroupId, long telegramUserId, string correctAnswer)
         {
             if (correctAnswer is null || correctAnswer == string.Empty) throw new ArgumentException("Answer can't be empty or null");
             if (telegramUserId == 0 || telegramUserId < 0) throw new ArgumentException("User id can't be zero or negative");
@@ -36,7 +36,8 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 CorrectAnswer = correctAnswer,
                 GroupId = telegramGroupId,
-                UserId = telegramUserId
+                UserId = telegramUserId,
+                Status=StatusTypes.InProgress
             };
 
             await checkList.CreateNewAsync(check);
@@ -53,7 +54,7 @@ namespace ArgusBot.BL.Services.Implementation
             if (userId == 0 || userId < 0) throw new ArgumentException("User id can't be zero or negative");
             if (messageId == 0 || messageId < 0) throw new ArgumentException("Message id can't be zero or negative");
 
-            var itemToUpdate = await checkList.GetItemByUserIdAsync(userId);
+            Check itemToUpdate = await checkList.GetItemByUserIdAsync(userId);
 
             if (itemToUpdate is not null)
             {

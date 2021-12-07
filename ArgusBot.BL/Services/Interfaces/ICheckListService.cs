@@ -6,7 +6,7 @@ namespace ArgusBot.BL.Services.Interfaces
 {
     public interface ICheckListService
     {
-        public Task CreateCheckAsync(int telegramGroupId, long telegramUserId, string correctAnswer);
+        public Task CreateCheckAsync(long telegramGroupId, long telegramUserId, string correctAnswer);
 
         public Task ChangeCheckStatusForUserAsync(long userId, byte status);
 

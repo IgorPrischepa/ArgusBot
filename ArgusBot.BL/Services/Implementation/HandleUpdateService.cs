@@ -52,10 +52,11 @@ namespace ArgusBot.BL.Services.Implementation
 
         private async Task BotOnMessageReceived(Message message)
         {
-            if(message.NewChatMembers!=null && message.NewChatMembers.Length > 0)
+            if(message.NewChatMembers!=null)
             {
-                
+                await _captchaService.InitiateCaptchaProcess(message.NewChatMembers, message.Chat.Id);
             }
+            await _captchaService.ProcessMesagge(message);
             _logger.LogInformation("Receive message type: {messageType}", message.Type);
             if (message.Type != MessageType.Text)
                 return;

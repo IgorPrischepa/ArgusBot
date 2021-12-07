@@ -13,7 +13,7 @@ namespace ArgusBot.DAL.Models
         public int CheckId { get; set; }
 
         [Required]
-        public int GroupId { get; set; }
+        public long GroupId { get; set; }
 
         [Required]
         public long UserId { get; set; }
