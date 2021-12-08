@@ -8,7 +8,7 @@ namespace ArgusBot.BL.Services
         {
             if (checkedObject == null)
             {
-                 throw new NullReferenceException(message);
+                throw new NullReferenceException(message);
             }
             return;
 

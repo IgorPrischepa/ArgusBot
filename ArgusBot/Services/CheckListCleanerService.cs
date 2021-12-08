@@ -39,7 +39,7 @@ namespace ArgusBot.Services.Implementations
 
         private async void DeletingFailedCpathcaChecks(object state)
         {
-            const byte inProgress = 1;
+            const byte inProgress = 0;
 
             _logger.LogInformation("Fetching list of  capthca records");
 
@@ -54,7 +54,7 @@ namespace ArgusBot.Services.Implementations
 
                 foreach (Check check in currentList)
                 {
-                    if ((check.SendingTime - DateTime.Now) > TimeSpan.FromSeconds(30))
+                    if ((DateTime.Now - check.SendingTime).TotalSeconds > TimeSpan.FromSeconds(30).TotalSeconds)
                     {
                         await botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
                         await botClient.KickChatMemberAsync(check.GroupId, check.UserId);

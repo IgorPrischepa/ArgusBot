@@ -30,14 +30,14 @@ namespace ArgusBot.BL.Services.Implementation
         {
             if (correctAnswer is null || correctAnswer == string.Empty) throw new ArgumentException("Answer can't be empty or null");
             if (telegramUserId == 0 || telegramUserId < 0) throw new ArgumentException("User id can't be zero or negative");
-            if (telegramGroupId == 0 || telegramGroupId < 0) throw new ArgumentException("Group id can't be zero or negative");
-
+            var dateSentMessage = DateTime.Now;
             Check check = new Check
             {
                 CorrectAnswer = correctAnswer,
                 GroupId = telegramGroupId,
                 UserId = telegramUserId,
-                Status=StatusTypes.InProgress
+                Status = StatusTypes.InProgress,
+                SendingTime = dateSentMessage
             };
 
             await checkList.CreateNewAsync(check);
@@ -71,6 +71,11 @@ namespace ArgusBot.BL.Services.Implementation
         public async Task<List<Check>> GetCheckListWithStatus(byte status)
         {
             return await checkList.GetCheckByStatusAsync((StatusTypes)status);
+        }
+
+        public async Task<Check> GetCheckForUser(long telegramUserId)
+        {
+            return await checkList.GetItemByUserIdAsync(telegramUserId);
         }
     }
 }

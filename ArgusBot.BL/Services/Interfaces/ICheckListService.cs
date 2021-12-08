@@ -17,5 +17,6 @@ namespace ArgusBot.BL.Services.Interfaces
         public Task<List<Check>> GetCheckListWithStatus(byte status);
 
         public Task<ICollection<Check>> GetAllFromCheckListAsync();
+        public Task<Check> GetCheckForUser(long telegramUserId);
     }
 }

@@ -4,6 +4,7 @@ using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ArgusBot.DAL.Repositories.Implementation
@@ -19,9 +20,14 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public async Task AddAdminToGroupAsync(long groupId, long userId)
         {
-            Group group = await db.Groups.FirstOrDefaultAsync(g => g.GroupId.Equals(groupId));
+            Group group = await db.Groups.Include(g => g.GroupAdmins).FirstOrDefaultAsync(g => g.GroupId.Equals(groupId));
             if (group is not null)
             {
+                var admin = group.GroupAdmins.SingleOrDefault(ad => ad.TelegramUserId == userId && ad.GroupId == group.Id);
+                if (admin != null)
+                {
+                    return;
+                }
                 GroupAdmin groupAdmin = new GroupAdmin { TelegramUserId = userId, Group = group };
                 await db.GroupAdmins.AddAsync(groupAdmin);
                 await SaveChangesAsync();
@@ -31,7 +37,6 @@ namespace ArgusBot.DAL.Repositories.Implementation
                 throw new ArgumentNullException(nameof(groupId));
             }
         }
-
 
         public async Task AddGroupAsync(Group group)
         {
@@ -56,6 +61,17 @@ namespace ArgusBot.DAL.Repositories.Implementation
         {
             Group group = await GetGroupByIdAsync(groupId);
             db.Groups.Remove(group);
+            await SaveChangesAsync();
+        }
+
+        public async Task DeleteGroupWithAdmins(long groupId)
+        {
+            var groups = await db.Groups.Where(g => g.GroupId == groupId).Include(g => g.GroupAdmins).ToListAsync();
+            foreach (var group in groups)
+            {
+                db.GroupAdmins.RemoveRange(group.GroupAdmins);
+            }
+            db.Groups.RemoveRange(groups);
             await SaveChangesAsync();
         }
 

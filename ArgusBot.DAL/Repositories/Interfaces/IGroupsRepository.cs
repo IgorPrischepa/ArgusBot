@@ -19,7 +19,7 @@ namespace ArgusBot.DAL.Repositories.Interfaces
         public Task<List<Group>> GetAllGroupAsync();
 
         public Task<List<Group>> GetAllGroupWithAdminsAsync();
-
+        public Task DeleteGroupWithAdmins(long groupId);
         Task SaveChangesAsync();
     }
 }

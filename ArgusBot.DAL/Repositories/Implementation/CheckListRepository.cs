@@ -25,7 +25,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public async Task DeleteAsync(long userId)
         {
-            var itemToDelete = db.CheckList.FirstOrDefaultAsync(check => check.UserId.Equals(userId));
+            var itemToDelete = db.CheckList.FirstOrDefault(check => check.UserId.Equals(userId));
             if (itemToDelete is not null)
             {
                 db.Entry(itemToDelete).State = EntityState.Deleted;

@@ -6,16 +6,18 @@ namespace ArgusBot.BL.Services.Interfaces
 {
     public interface IGroupService
     {
-        public Task AddGroupAsync(int groupId, string groupName);
+        public Task AddGroupAsync(long groupId, string groupName);
 
-        public Task RemoveGroupAsync(int groupId);
+        public Task RemoveGroupAsync(long groupId);
 
-        public Task AddAdminToTelegramGroupAsync(int groupId, int userId);
+        public Task AddAdminToTelegramGroupAsync(long groupId, long userId);
 
-        public Task RemoveAdminFromTelegramGroupAsync(int groupId, int userId);
+        public Task RemoveAdminFromTelegramGroupAsync(long groupId, long userId);
 
         public Task<List<Group>> GetAllGroupsAsync();
 
         public Task<List<Group>> GetGroupsWithAdminsAsync();
+        public Task RemoveGroupWithAdmins(long groupId);
+        public Task<bool> Exists(long groupId);
     }
 }

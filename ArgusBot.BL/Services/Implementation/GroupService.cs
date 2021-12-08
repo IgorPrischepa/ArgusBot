@@ -2,6 +2,7 @@
 using ArgusBot.DAL.Models;
 using ArgusBot.DAL.Repositories.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ArgusBot.BL.Services.Implementation
@@ -15,13 +16,18 @@ namespace ArgusBot.BL.Services.Implementation
             groupRepository = repository;
         }
 
-        public async Task AddAdminToTelegramGroupAsync(int groupId, int userId)
+        public async Task AddAdminToTelegramGroupAsync(long groupId, long userId)
         {
             await groupRepository.AddAdminToGroupAsync(groupId, userId);
         }
 
-        public async Task AddGroupAsync(int groupId, string groupName)
+        public async Task AddGroupAsync(long groupId, string groupName)
         {
+            var groups = await groupRepository.GetAllGroupAsync();
+            if (groups?.SingleOrDefault(g => g.GroupId == groupId) != null)
+            {
+                return;
+            }
             Group group = new Group
             {
                 GroupId = groupId,
@@ -29,6 +35,16 @@ namespace ArgusBot.BL.Services.Implementation
             };
 
             await groupRepository.AddGroupAsync(group);
+        }
+
+        public async Task<bool> Exists(long groupId)
+        {
+            var group = await groupRepository.GetGroupByIdAsync(groupId);
+            if (group != null)
+            {
+                return true;
+            }
+            return false;
         }
 
         public Task<List<Group>> GetAllGroupsAsync()
@@ -41,14 +57,19 @@ namespace ArgusBot.BL.Services.Implementation
             return await groupRepository.GetAllGroupWithAdminsAsync();
         }
 
-        public async Task RemoveAdminFromTelegramGroupAsync(int groupId, int userId)
+        public async Task RemoveAdminFromTelegramGroupAsync(long groupId, long userId)
         {
             await groupRepository.DeleteAdminFromGroupAsync(groupId, userId);
         }
 
-        public async Task RemoveGroupAsync(int groupId)
+        public async Task RemoveGroupAsync(long groupId)
         {
             await groupRepository.DeleteGroupAsync(groupId);
+        }
+
+        public async Task RemoveGroupWithAdmins(long groupId)
+        {
+            await groupRepository.DeleteGroupWithAdmins(groupId);
         }
     }
 }
