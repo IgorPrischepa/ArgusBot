@@ -67,11 +67,6 @@ namespace ArgusBot.BL.Services.Implementation
                     await OnBotWasRemoved(myChatMember);
                     return;
                 }
-                if (myChatMember.NewChatMember.Status == ChatMemberStatus.Kicked || myChatMember.NewChatMember.Status == ChatMemberStatus.Left)
-                {
-                    await OnUserWasRemoved(myChatMember);
-                    return;
-                }
                 if (myChatMember.NewChatMember.Status == ChatMemberStatus.Administrator)
                 {
                     await CheckAdmins(myChatMember);
@@ -152,24 +147,6 @@ namespace ArgusBot.BL.Services.Implementation
         {
             _logger.LogInformation($"User {chatMemberUpdated.NewChatMember.User.Id} was removed from the group");
             await _groupService.RemoveGroupWithAdmins(chatMemberUpdated.Chat.Id);
-        }
-        private async Task OnUserWasRemoved(ChatMemberUpdated chatMemberUpdated)
-        {
-            switch (chatMemberUpdated.NewChatMember.Status)
-            {
-                case ChatMemberStatus.Kicked:
-                    {
-                        _logger.LogInformation($"User {chatMemberUpdated.NewChatMember.User.Id} was removed from the group");
-                        break;
-                    }
-                case ChatMemberStatus.Left:
-                    {
-                        _logger.LogInformation($"User {chatMemberUpdated.NewChatMember.User.Id} has left the chat. Removing captcha result for him.");
-                        break;
-                    }
-                default: return;
-            }
-            await _checkListService.DeleteCheckForUser(chatMemberUpdated.NewChatMember.User.Id);
         }
     }
 }
