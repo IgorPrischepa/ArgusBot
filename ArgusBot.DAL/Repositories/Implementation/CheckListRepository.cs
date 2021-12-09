@@ -23,9 +23,9 @@ namespace ArgusBot.DAL.Repositories.Implementation
             await SaveAsync();
         }
 
-        public async Task DeleteAsync(long userId)
+        public async Task DeleteAsync(long userId, long groupId)
         {
-            var itemToDelete = db.CheckList.FirstOrDefault(check => check.UserId.Equals(userId));
+            var itemToDelete = db.CheckList.FirstOrDefault(check => check.UserId.Equals(userId) && check.GroupId == groupId);
             if (itemToDelete is not null)
             {
                 db.Entry(itemToDelete).State = EntityState.Deleted;
@@ -38,14 +38,14 @@ namespace ArgusBot.DAL.Repositories.Implementation
             return await db.CheckList.ToListAsync();
         }
 
-        public async Task<List<Check>> GetCheckByStatusAsync(StatusTypes status)
+        public IEnumerable<Check> GetCheckByStatusAsync(StatusTypes status, int countChunk, int skippedCount)
         {
-            return await db.CheckList.Where(x => x.Status.Equals(status)).ToListAsync();
+            IEnumerable<Check> chunk = db.CheckList.Where(u => u.Status == status).Skip(skippedCount).Take(countChunk);
+            return chunk;
         }
-
-        public async Task<Check> GetItemByUserIdAsync(long userId)
+        public async Task<Check> GetItemByUserAndGroupIdAsync(long userId, long groupId)
         {
-            return await db.CheckList.FirstOrDefaultAsync(u => u.UserId == userId);
+            return await db.CheckList.SingleOrDefaultAsync(u => u.UserId == userId && u.GroupId == groupId);
         }
 
         public async Task SaveAsync()

@@ -41,24 +41,24 @@ namespace ArgusBot.Services.Implementations
         {
             const byte inProgress = 0;
 
-            _logger.LogInformation("Fetching list of  capthca records");
+            _logger.LogInformation("Fetching list of captcha records");
 
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
                 ICheckListService checkList =
-                    scope.ServiceProvider.GetRequiredService<ICheckListService>();
+                  scope.ServiceProvider.GetRequiredService<ICheckListService>();
 
-                List<Check> currentList = await checkList.GetCheckListWithStatus(inProgress);
+                IAsyncEnumerable<IEnumerable<Check>> currentList = checkList.GetCheckListWithStatus(inProgress, 500);
 
                 _logger.LogInformation("Starting processing checklist.");
 
-                foreach (Check check in currentList)
+                await foreach (Check check in currentList)
                 {
                     if ((DateTime.Now - check.SendingTime).TotalSeconds > TimeSpan.FromSeconds(30).TotalSeconds)
                     {
                         await botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
                         await botClient.KickChatMemberAsync(check.GroupId, check.UserId);
-                        await checkList.DeleteCheckForUser(check.UserId);
+                        await checkList.DeleteCheckForUser(check.UserId, check.GroupId);
                     }
                 }
             }
@@ -67,6 +67,8 @@ namespace ArgusBot.Services.Implementations
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Cleaner was stopped");
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
+            timer.Dispose();
             return Task.CompletedTask;
         }
     }

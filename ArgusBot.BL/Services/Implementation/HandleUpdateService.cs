@@ -67,11 +67,6 @@ namespace ArgusBot.BL.Services.Implementation
                     await OnBotWasRemoved(myChatMember);
                     return;
                 }
-                if (myChatMember.NewChatMember.Status == ChatMemberStatus.Kicked || myChatMember.NewChatMember.Status == ChatMemberStatus.Left)
-                {
-                    await OnUserWasRemoved(myChatMember);
-                    return;
-                }
                 if (myChatMember.NewChatMember.Status == ChatMemberStatus.Administrator)
                 {
                     await CheckAdmins(myChatMember);
@@ -96,7 +91,7 @@ namespace ArgusBot.BL.Services.Implementation
             }
             if (message.Type == MessageType.ChatMemberLeft)
             {
-                await _checkListService.DeleteCheckForUser(message.LeftChatMember.Id);
+                await _checkListService.DeleteCheckForUser(message.LeftChatMember.Id, message.Chat.Id);
                 _logger.LogInformation($"Captcha data for this user was removed");
             }
             await _captchaService.ProcessMesagge(message);
@@ -141,35 +136,13 @@ namespace ArgusBot.BL.Services.Implementation
         }
         private IEnumerable<User> RemoveBotFromNewChatMembers(IEnumerable<User> members)
         {
-            var bot = members.SingleOrDefault(u => u.Id == long.Parse(_config["bot-id"]));
-            if (bot != null)
-            {
-                members.ToList().Remove(bot);
-            }
-            return members;
+            long botId = long.Parse(_config["bot-id"]);
+            return members.Where(u => u.Id != botId);
         }
         private async Task OnBotWasRemoved(ChatMemberUpdated chatMemberUpdated)
         {
             _logger.LogInformation($"User {chatMemberUpdated.NewChatMember.User.Id} was removed from the group");
             await _groupService.RemoveGroupWithAdmins(chatMemberUpdated.Chat.Id);
-        }
-        private async Task OnUserWasRemoved(ChatMemberUpdated chatMemberUpdated)
-        {
-            switch (chatMemberUpdated.NewChatMember.Status)
-            {
-                case ChatMemberStatus.Kicked:
-                    {
-                        _logger.LogInformation($"User {chatMemberUpdated.NewChatMember.User.Id} was removed from the group");
-                        break;
-                    }
-                case ChatMemberStatus.Left:
-                    {
-                        _logger.LogInformation($"User {chatMemberUpdated.NewChatMember.User.Id} has left the chat. Removing captcha result for him.");
-                        break;
-                    }
-                default: return;
-            }
-            await _checkListService.DeleteCheckForUser(chatMemberUpdated.NewChatMember.User.Id);
         }
     }
 }

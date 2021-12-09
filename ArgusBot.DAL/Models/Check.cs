@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ArgusBot.DAL.Models
 {
-    [Index(nameof(GroupId), nameof(UserId))]
+
     public class Check
     {
         [Key]

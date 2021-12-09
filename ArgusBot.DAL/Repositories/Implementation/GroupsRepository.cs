@@ -87,7 +87,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public async Task<Group> GetGroupByIdAsync(long groupId)
         {
-            return await db.Groups.FirstOrDefaultAsync(g => g.GroupId.Equals(groupId));
+            return await db.Groups.SingleOrDefaultAsync(g => g.GroupId.Equals(groupId));
         }
 
         public async Task SaveChangesAsync()

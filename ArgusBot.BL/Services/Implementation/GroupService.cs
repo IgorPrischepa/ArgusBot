@@ -2,7 +2,6 @@
 using ArgusBot.DAL.Models;
 using ArgusBot.DAL.Repositories.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ArgusBot.BL.Services.Implementation
@@ -23,18 +22,16 @@ namespace ArgusBot.BL.Services.Implementation
 
         public async Task AddGroupAsync(long groupId, string groupName)
         {
-            var groups = await groupRepository.GetAllGroupAsync();
-            if (groups?.SingleOrDefault(g => g.GroupId == groupId) != null)
+            Group checkingGroup = await groupRepository.GetGroupByIdAsync(groupId);
+            if (checkingGroup is null)
             {
-                return;
+                Group group = new Group
+                {
+                    GroupId = groupId,
+                    GroupName = groupName
+                };
+                await groupRepository.AddGroupAsync(group);
             }
-            Group group = new Group
-            {
-                GroupId = groupId,
-                GroupName = groupName
-            };
-
-            await groupRepository.AddGroupAsync(group);
         }
 
         public async Task<bool> Exists(long groupId)
