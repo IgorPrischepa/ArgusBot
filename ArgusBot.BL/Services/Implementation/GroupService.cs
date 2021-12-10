@@ -36,7 +36,7 @@ namespace ArgusBot.BL.Services.Implementation
 
         public async Task<bool> Exists(long groupId)
         {
-            var group = await groupRepository.GetGroupByIdAsync(groupId);
+            Group group = await groupRepository.GetGroupByIdAsync(groupId);
             if (group != null)
             {
                 return true;

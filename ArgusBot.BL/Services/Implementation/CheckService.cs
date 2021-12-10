@@ -74,16 +74,16 @@ namespace ArgusBot.BL.Services.Implementation
         public async IAsyncEnumerable<IEnumerable<Check>> GetCheckListWithStatus(StatusTypes status, int count)
         {
             if (count > 1000 && count <= 0) throw new ArgumentException("You cannot set a count value for chunks more than 1000 or less than 0");
-            int readFiles = 0;
+            int offset = 0;
             while (true)
             {
-                IEnumerable<Check> chunk = await checkList.GetCheckByStatusAsync(status, count, readFiles);
+                IEnumerable<Check> chunk = await checkList.GetCheckByStatusAsync(status, count, offset);
                 var chunkCount = chunk.Count();
                 if (!chunk.Any())
                 {
                     break;
                 }
-                readFiles += chunkCount;
+                offset += chunkCount;
                 yield return chunk;
             }
         }
