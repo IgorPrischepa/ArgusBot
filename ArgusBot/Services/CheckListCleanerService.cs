@@ -13,15 +13,15 @@ namespace ArgusBot.Services.Implementations
 {
     public class CheckListCleanerService : IHostedService
     {
-        private readonly ITelegramBotClient botClient;
+        private readonly ITelegramBotClient _botClient;
         private readonly ILogger<CheckListCleanerService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private Timer timer;
+        private Timer _timer;
 
 
         public CheckListCleanerService(ITelegramBotClient client, ILogger<CheckListCleanerService> logger, IServiceProvider serviceProvider)
         {
-            botClient = client;
+            _botClient = client;
             _logger = logger;
             _serviceProvider = serviceProvider;
         }
@@ -31,7 +31,7 @@ namespace ArgusBot.Services.Implementations
 
             _logger.LogInformation("Starting processing checklist.");
 
-            timer = new Timer(DeletingFailedCpathcaChecks, null, TimeSpan.Zero,
+            _timer = new Timer(DeletingFailedCpathcaChecks, null, TimeSpan.Zero,
                 TimeSpan.FromSeconds(30));
 
             return Task.CompletedTask;
@@ -56,8 +56,8 @@ namespace ArgusBot.Services.Implementations
                 {
                     if ((DateTime.Now - check.SendingTime).TotalSeconds > 30)
                     {
-                        await botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
-                        await botClient.KickChatMemberAsync(check.GroupId, check.UserId);
+                        await _botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
+                        await _botClient.KickChatMemberAsync(check.GroupId, check.UserId);
                         await checkList.DeleteCheckForUser(check.UserId, check.GroupId);
                     }
                 }
@@ -67,8 +67,8 @@ namespace ArgusBot.Services.Implementations
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Cleaner was stopped");
-            timer.Change(Timeout.Infinite, Timeout.Infinite);
-            timer.Dispose();
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _timer.Dispose();
             return Task.CompletedTask;
         }
     }
