@@ -54,7 +54,7 @@ namespace ArgusBot.Services.Implementations
 
                 await foreach (Check check in currentList)
                 {
-                    if ((DateTime.Now - check.SendingTime).TotalSeconds > TimeSpan.FromSeconds(30).TotalSeconds)
+                    if ((DateTime.Now - check.SendingTime).TotalSeconds > 30)
                     {
                         await botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
                         await botClient.KickChatMemberAsync(check.GroupId, check.UserId);
