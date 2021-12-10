@@ -14,7 +14,7 @@ namespace ArgusBot.BL.Services.Interfaces
 
         public Task UpdateQuestionMsgId(long userId, long groupId, int messageId);
 
-        IAsyncEnumerable<IEnumerable<Check>> GetCheckListWithStatus(StatusTypes status, int count);
+        Task<IEnumerable<Check>> GetCheckListWithStatus(StatusTypes status, int count, int offset);
 
         public Task<ICollection<Check>> GetAllFromCheckListAsync();
         public Task<Check> GetCheckForUser(long telegramUserId, long groupId);

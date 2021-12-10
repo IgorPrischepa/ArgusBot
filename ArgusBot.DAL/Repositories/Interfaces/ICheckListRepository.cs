@@ -10,7 +10,7 @@ namespace ArgusBot.DAL.Repositories.Interfaces
 
         Task<Check> GetItemByUserAndGroupIdAsync(long userId, long groupId);
 
-        Task<IEnumerable<Check>> GetCheckByStatusAsync(StatusTypes status, int countChunk, int skippedCount);
+        Task<IEnumerable<Check>> GetCheckByStatusAndLimitAsync(StatusTypes status, int countChunk, int offset);
 
         Task CreateNewAsync(Check item);
 

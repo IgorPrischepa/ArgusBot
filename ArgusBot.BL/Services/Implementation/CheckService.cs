@@ -3,7 +3,6 @@ using ArgusBot.DAL.Models;
 using ArgusBot.DAL.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ArgusBot.BL.Services.Implementation
@@ -71,21 +70,11 @@ namespace ArgusBot.BL.Services.Implementation
             return await checkList.GetAllCheckListsAsync();
         }
 
-        public async IAsyncEnumerable<IEnumerable<Check>> GetCheckListWithStatus(StatusTypes status, int count)
+        public async Task<IEnumerable<Check>> GetCheckListWithStatus(StatusTypes status, int count, int offset)
         {
             if (count > 1000 && count <= 0) throw new ArgumentException("You cannot set a count value for chunks more than 1000 or less than 0");
-            int offset = 0;
-            while (true)
-            {
-                IEnumerable<Check> chunk = await checkList.GetCheckByStatusAsync(status, count, offset);
-                var chunkCount = chunk.Count();
-                if (!chunk.Any())
-                {
-                    break;
-                }
-                offset += chunkCount;
-                yield return chunk;
-            }
+            if (offset < 0) throw new ArgumentException("Offset value cannot be less than 0");
+            return await checkList.GetCheckByStatusAndLimitAsync(status, count, offset);
         }
 
         public async Task<Check> GetCheckForUser(long telegramUserId, long groupId)

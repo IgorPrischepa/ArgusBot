@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -45,20 +46,20 @@ namespace ArgusBot.Services.Implementations
             {
                 ICheckListService checkList =
                   scope.ServiceProvider.GetRequiredService<ICheckListService>();
-
-                IAsyncEnumerable<IEnumerable<Check>> currentList = checkList.GetCheckListWithStatus(StatusTypes.InProgress, 500);
-
+                int offset = 0;
                 _logger.LogInformation("Starting processing checklist.");
-
-                await foreach (Check check in currentList)
+                IEnumerable<Check> currentChunk = null;
+                do
                 {
-                    if ((DateTime.Now - check.SendingTime).TotalSeconds > 30)
+                    currentChunk = await checkList.GetCheckListWithStatus(StatusTypes.InProgress, 500, offset);
+                    foreach (Check check in currentChunk)
                     {
                         await _botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
                         await _botClient.KickChatMemberAsync(check.GroupId, check.UserId);
                         await checkList.DeleteCheckForUser(check.UserId, check.GroupId);
                     }
                 }
+                while (!currentChunk.Any());
             }
         }
 

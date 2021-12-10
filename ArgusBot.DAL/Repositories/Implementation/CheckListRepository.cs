@@ -2,6 +2,7 @@
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,9 +39,9 @@ namespace ArgusBot.DAL.Repositories.Implementation
             return await db.CheckList.ToListAsync();
         }
 
-        public async Task<IEnumerable<Check>> GetCheckByStatusAsync(StatusTypes status, int countChunk, int skippedCount)
+        public async Task<IEnumerable<Check>> GetCheckByStatusAndLimitAsync(StatusTypes status, int countChunk, int offset)
         {
-            IEnumerable<Check> chunk = await db.CheckList.Where(u => u.Status == status).Skip(skippedCount).Take(countChunk).ToListAsync();
+            IEnumerable<Check> chunk = await db.CheckList.Where(u => u.Status == status && (DateTime.Now - u.SendingTime).TotalSeconds > 30).Skip(offset).Take(countChunk).ToListAsync();
             return chunk;
         }
         public async Task<Check> GetItemByUserAndGroupIdAsync(long userId, long groupId)
