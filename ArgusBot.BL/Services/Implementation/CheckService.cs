@@ -77,9 +77,9 @@ namespace ArgusBot.BL.Services.Implementation
             int readFiles = 0;
             while (true)
             {
-                IEnumerable<Check> chunk = await Task.Run(() => checkList.GetCheckByStatusAsync(status, count, readFiles));
+                IEnumerable<Check> chunk = await checkList.GetCheckByStatusAsync(status, count, readFiles);
                 var chunkCount = chunk.Count();
-                if (chunkCount == 0)
+                if (!chunk.Any())
                 {
                     break;
                 }

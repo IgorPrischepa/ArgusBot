@@ -38,9 +38,9 @@ namespace ArgusBot.DAL.Repositories.Implementation
             return await db.CheckList.ToListAsync();
         }
 
-        public IEnumerable<Check> GetCheckByStatusAsync(StatusTypes status, int countChunk, int skippedCount)
+        public async Task<IEnumerable<Check>> GetCheckByStatusAsync(StatusTypes status, int countChunk, int skippedCount)
         {
-            IEnumerable<Check> chunk = db.CheckList.Where(u => u.Status == status).Skip(skippedCount).Take(countChunk);
+            IEnumerable<Check> chunk = await db.CheckList.Where(u => u.Status == status).Skip(skippedCount).Take(countChunk).ToListAsync();
             return chunk;
         }
         public async Task<Check> GetItemByUserAndGroupIdAsync(long userId, long groupId)
