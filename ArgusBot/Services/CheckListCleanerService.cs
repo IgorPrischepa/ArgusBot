@@ -39,8 +39,6 @@ namespace ArgusBot.Services.Implementations
 
         private async void DeletingFailedCpathcaChecks(object state)
         {
-            const byte inProgress = 0;
-
             _logger.LogInformation("Fetching list of captcha records");
 
             using (IServiceScope scope = _serviceProvider.CreateScope())
@@ -48,7 +46,7 @@ namespace ArgusBot.Services.Implementations
                 ICheckListService checkList =
                   scope.ServiceProvider.GetRequiredService<ICheckListService>();
 
-                IAsyncEnumerable<IEnumerable<Check>> currentList = checkList.GetCheckListWithStatus(inProgress, 500);
+                IAsyncEnumerable<IEnumerable<Check>> currentList = checkList.GetCheckListWithStatus(StatusTypes.InProgress, 500);
 
                 _logger.LogInformation("Starting processing checklist.");
 
