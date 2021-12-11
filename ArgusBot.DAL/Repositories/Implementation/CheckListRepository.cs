@@ -41,7 +41,9 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public async Task<IEnumerable<Check>> GetCheckByStatusAndLimitAsync(StatusTypes status, int countChunk, int offset)
         {
-            IEnumerable<Check> chunk = await db.CheckList.Where(u => u.Status == status && (DateTime.Now - u.SendingTime).TotalSeconds > 30).Skip(offset).Take(countChunk).ToListAsync();
+            DateTime maxSendingDateTime = DateTime.Now.Subtract(TimeSpan.FromSeconds(30));
+            IEnumerable<Check> chunk = await db.CheckList.Where(u => u.Status == status && u.SendingTime <= maxSendingDateTime)
+                                                          .Skip(offset).Take(countChunk).ToListAsync();
             return chunk;
         }
         public async Task<Check> GetItemByUserAndGroupIdAsync(long userId, long groupId)
