@@ -3,11 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ArgusBot.Data
 {
-    public class UsersContext : DbContext
+    public class MainContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
-        public UsersContext(DbContextOptions<UsersContext> options) : base(options)
+        public DbSet<Check> CheckList { get; set; }
+
+        public DbSet<Group> Groups { get; set; }
+
+        public DbSet<GroupAdmin> GroupAdmins { get; set; }
+
+        public MainContext(DbContextOptions<MainContext> options) : base(options)
         {
         }
 
@@ -15,6 +21,7 @@ namespace ArgusBot.Data
         {
             modelBuilder.Entity<User>().HasIndex(u => u.NormalizedLogin).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.NormalizedTelegramLogin).IsUnique();
+            modelBuilder.Entity<Check>().HasIndex("GroupId", "UserId").IsUnique();
         }
     }
 }

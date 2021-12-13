@@ -29,7 +29,7 @@ namespace ArgusBot
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<UsersContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<MainContext>(options => options.UseSqlServer(connection));
 
             services.AddHttpContextAccessor();
 
@@ -42,12 +42,23 @@ namespace ArgusBot
             services.AddScoped<IHandleUpdateService, HandleUpdateService>();
 
             services.AddHostedService<TelegramHostedService>().AddLogging(log => log.AddConsole());
+
+
             services.AddAutoMapper(typeof(UserMapper));
             services.AddScoped<IUserService, UserService>().AddLogging(log => log.AddConsole());
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<ICheckListRepository, CheckListRepository>();
+            services.AddScoped<IGroupsRepository, GroupsRepository>();
+            services.AddScoped<ICheckListService, CheckService>();
+            services.AddScoped<IGroupService, GroupService>();
+
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
             services.AddTransient<IQueryParser, QueryParser>();
             services.AddScoped<ISignInService, SignInService>();
+            services.AddScoped<ICaptchaService, CaptchaService>();
+
+            services.AddHostedService<CheckListCleanerService>().AddLogging(log => log.AddConsole());
 
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

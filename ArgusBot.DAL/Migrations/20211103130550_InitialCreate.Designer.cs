@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ArgusBot.DAL.Migrations
 {
-    [DbContext(typeof(UsersContext))]
+    [DbContext(typeof(MainContext))]
     [Migration("20211103130550_InitialCreate")]
     partial class InitialCreate
     {

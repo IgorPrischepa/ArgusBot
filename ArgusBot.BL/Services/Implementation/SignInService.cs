@@ -60,7 +60,7 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
                 ProfileDTO authUser = await _userService.GetUserByTelegramAccountAsync(id);
-                if (authUser==null)
+                if (authUser == null)
                 {
                     await AuthorizeViaTelegram(queryString, authUser);
                     _logger?.LogInformation($"User:{authUser.TelegramId} has succesfully authorized!");
@@ -72,7 +72,7 @@ namespace ArgusBot.BL.Services.Implementation
                     if (queryString.TryGetValue("username", out string username))
                     {
                         ProfileDTO newUser = await _userService.CreateNewUserByTelegramAccountAsync(id, username);
-                        if (newUser==null)
+                        if (newUser == null)
                         {
                             _logger?.LogInformation($"It`s created a new user by data from telegram account");
                             _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");

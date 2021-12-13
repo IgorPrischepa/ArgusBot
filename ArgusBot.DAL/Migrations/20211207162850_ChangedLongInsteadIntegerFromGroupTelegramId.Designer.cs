@@ -4,14 +4,16 @@ using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ArgusBot.DAL.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20211207162850_ChangedLongInsteadIntegerFromGroupTelegramId")]
+    partial class ChangedLongInsteadIntegerFromGroupTelegramId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,8 +49,7 @@ namespace ArgusBot.DAL.Migrations
 
                     b.HasKey("CheckId");
 
-                    b.HasIndex("GroupId", "UserId")
-                        .IsUnique();
+                    b.HasIndex("GroupId", "UserId");
 
                     b.ToTable("CheckList");
                 });

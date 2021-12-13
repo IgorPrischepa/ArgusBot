@@ -4,14 +4,16 @@ using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ArgusBot.DAL.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20211207160655_ChangedLongInsteadIntegerFromTelegramId")]
+    partial class ChangedLongInsteadIntegerFromTelegramId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +32,8 @@ namespace ArgusBot.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<int>("QuestionMessageId")
                         .HasColumnType("int");
@@ -47,8 +49,7 @@ namespace ArgusBot.DAL.Migrations
 
                     b.HasKey("CheckId");
 
-                    b.HasIndex("GroupId", "UserId")
-                        .IsUnique();
+                    b.HasIndex("GroupId", "UserId");
 
                     b.ToTable("CheckList");
                 });
@@ -60,8 +61,8 @@ namespace ArgusBot.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<string>("GroupName")
                         .HasColumnType("nvarchar(max)");
