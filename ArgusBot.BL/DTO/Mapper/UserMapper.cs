@@ -15,6 +15,8 @@ namespace ArgusBot.BL.DTO.Mapper
             CreateMap<User, ProfileDTO>().ForMember(d => d.Login, map => map.MapFrom(src => src.Login ?? ""))
                                          .ForMember(d => d.TelegramId, map => map.MapFrom(src => src.TelegramId ?? ""))
                                          .ForMember(d => d.UserGuid, map => map.MapFrom(src => src.UserGuid));
+            CreateMap<Group, GroupDTO>().ForMember(g => g.Id, map => map.MapFrom(src => src.GroupId))
+                                       .ForMember(g => g.Name, map => map.MapFrom(src => src.GroupName));
         }
     }
 }

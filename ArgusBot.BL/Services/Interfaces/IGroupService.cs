@@ -13,7 +13,7 @@ namespace ArgusBot.BL.Services.Interfaces
         public Task AddAdminToTelegramGroupAsync(long groupId, long userId);
 
         public Task RemoveAdminFromTelegramGroupAsync(long groupId, long userId);
-
+        public IEnumerable<Group> GetGroupsForCurrentAdmin(long userId);
         public Task<List<Group>> GetAllGroupsAsync();
 
         public Task<List<Group>> GetGroupsWithAdminsAsync();

@@ -60,7 +60,7 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
                 ProfileDTO authUser = await _userService.GetUserByTelegramAccountAsync(id);
-                if (authUser == null)
+                if (authUser != null)
                 {
                     await AuthorizeViaTelegram(queryString, authUser);
                     _logger?.LogInformation($"User:{authUser.TelegramId} has succesfully authorized!");
@@ -72,7 +72,7 @@ namespace ArgusBot.BL.Services.Implementation
                     if (queryString.TryGetValue("username", out string username))
                     {
                         ProfileDTO newUser = await _userService.CreateNewUserByTelegramAccountAsync(id, username);
-                        if (newUser == null)
+                        if (newUser != null)
                         {
                             _logger?.LogInformation($"It`s created a new user by data from telegram account");
                             _logger?.LogInformation($"Authentication process for user:{queryString["id"]} has started");
@@ -153,7 +153,7 @@ namespace ArgusBot.BL.Services.Implementation
         private async Task AddIdCookies(string login)
         {
             ProfileDTO checkedUser = await _userService.GetUserByLoginAsync(login);
-            if (checkedUser == null)
+            if (checkedUser != null)
             {
                 if (checkedUser.UserGuid != Guid.Empty)
                     _context.HttpContext.Response.Cookies.Append("identifier", checkedUser.UserGuid.ToString());
@@ -166,6 +166,7 @@ namespace ArgusBot.BL.Services.Implementation
             if (string.IsNullOrEmpty(telegramId))
                 _context.HttpContext.Response.Cookies.Append("attached_telegram", "false");
             else _context.HttpContext.Response.Cookies.Append("attached_telegram", "true");
+            _context.HttpContext.Response.Cookies.Append("telegram_id", telegramId);
         }
     }
 }

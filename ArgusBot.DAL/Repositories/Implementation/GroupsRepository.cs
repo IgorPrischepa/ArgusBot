@@ -90,6 +90,13 @@ namespace ArgusBot.DAL.Repositories.Implementation
             return await db.Groups.SingleOrDefaultAsync(g => g.GroupId.Equals(groupId));
         }
 
+        public IEnumerable<Group> GetGroupsForUser(long userId)
+        {
+            return db.Groups.Include(g => g.GroupAdmins)
+                                  .Where(g => g.GroupAdmins.SingleOrDefault(admin => admin.TelegramUserId == userId) != null)
+                                  .ToList();
+        }
+
         public async Task SaveChangesAsync()
         {
             await db.SaveChangesAsync();

@@ -17,7 +17,7 @@ namespace ArgusBot.DAL.Repositories.Interfaces
         public Task DeleteAdminFromGroupAsync(long groupId, long userId);
 
         public Task<List<Group>> GetAllGroupAsync();
-
+        public IEnumerable<Group> GetGroupsForUser(long userId);
         public Task<List<Group>> GetAllGroupWithAdminsAsync();
         public Task DeleteGroupWithAdmins(long groupId);
         Task SaveChangesAsync();

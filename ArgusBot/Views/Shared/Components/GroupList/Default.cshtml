@@ -1,0 +1,28 @@
+﻿@model GroupListComponentViewModel
+<div class="container">
+    @if (Model.Groups != null && !Model.NeedToAttachTelegramAccount)
+    {
+        <h3>List of your groups</h3>
+        <ul class="list-group">
+            @foreach (var group in Model.Groups)
+            {
+                <li class="list-group-item-light row justify-content-between">
+                    <p class="text-primary">Group:@group.Name <i>id:@group.Id</i></p>
+                    <a class="btn" href="#">Show properties</a>
+                </li>
+            }
+        </ul>
+    }
+    @if(Model.NeedToAttachTelegramAccount && Model.Groups!= null)
+    {
+        <h3 class="text-danger">To see you groups attach your telegram account by button bellow.</h3>
+    }
+    @if(!Model.NeedToAttachTelegramAccount && Model.Groups == null)
+    { 
+        <h3 class="text-info">You can see here your groups where you are admin.</h3>
+    }
+    @if(Model.NeedToAttachTelegramAccount && Model.Groups == null) 
+    {
+        <h3 class="text-info">You can see groups where you are admin in telegram. To see that attach your account by button below.</h3>
+    }
+</div>
