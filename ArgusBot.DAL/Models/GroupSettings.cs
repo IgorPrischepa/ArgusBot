@@ -14,9 +14,11 @@ namespace ArgusBot.DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        public string GroupId { get; set; }
+        public long TelegramChatId { get; set; }
 
         public bool IsCpatchaEnabled { get; set; } = true;
+
+        public int GroupId { get; set; }
+        public Group Group { get; set; }
     }
 }

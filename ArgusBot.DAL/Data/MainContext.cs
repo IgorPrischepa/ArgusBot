@@ -1,4 +1,5 @@
 ﻿using ArgusBot.DAL.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ArgusBot.Data
@@ -12,6 +13,8 @@ namespace ArgusBot.Data
         public DbSet<Group> Groups { get; set; }
 
         public DbSet<GroupAdmin> GroupAdmins { get; set; }
+
+        public DbSet<GroupSettings> GroupsSettings { get; set; }
 
         public MainContext(DbContextOptions<MainContext> options) : base(options)
         {

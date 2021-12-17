@@ -18,6 +18,7 @@ namespace ArgusBot.ViewCompomemts
             _mapper = mapper;
             _groupService = groupService;
         }
+
         public IViewComponentResult Invoke()
         {
             if (HttpContext.Request.Cookies.ContainsKey("telegram_id") && HttpContext.Request.Cookies.ContainsKey("attached_telegram"))
@@ -25,7 +26,9 @@ namespace ArgusBot.ViewCompomemts
                 if (HttpContext.Request.Cookies["attached_telegram"] == "true")
                 {
                     var adminId = long.Parse(HttpContext.Request.Cookies["telegram_id"]);
-                    IEnumerable<GroupDTO> groups = _groupService.GetGroupsForCurrentAdmin(adminId).Select(_mapper.Map<Group, GroupDTO>);
+
+                    IEnumerable<GroupDTO> groups = _groupService.GetGroupsForCurrentAdmin(adminId)?.Select(_mapper.Map<Group, GroupDTO>);
+
                     if (groups != null)
                     {
                         return View(new GroupListComponentViewModel()

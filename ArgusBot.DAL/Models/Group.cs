@@ -17,7 +17,6 @@ namespace ArgusBot.DAL.Models
 
         public List<GroupAdmin> GroupAdmins { get; set; }
 
-        public int GroupSettingsId { get; set; }
-        public GroupSettings Settings { get; set; }
+        public virtual GroupSettings Settings { get; set; }
     }
 }
