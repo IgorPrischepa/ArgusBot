@@ -1,5 +1,6 @@
-﻿using ArgusBot.BL.DTO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+using ArgusBot.BL.DTO;
 
 namespace ArgusBot.Models.Components
 {

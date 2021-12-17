@@ -1,11 +1,14 @@
-﻿using ArgusBot.BL.DTO;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using ArgusBot.BL.DTO;
 using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.DAL.Models;
 using ArgusBot.Models.Components;
+
 using AutoMapper;
+
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ArgusBot.ViewCompomemts
 {
