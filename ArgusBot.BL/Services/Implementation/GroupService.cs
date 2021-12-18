@@ -40,7 +40,7 @@ namespace ArgusBot.BL.Services.Implementation
 
                 if (createdGroup is not null)
                 {
-                    GroupSettings groupSettings = new GroupSettings()
+                    GroupSettings groupSettings = new()
                     {
                         TelegramChatId = groupId,
                         Group = createdGroup

@@ -5,11 +5,8 @@ using ArgusBot.BL.DTO;
 using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.Models;
 
-using AutoMapper;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 
 
 namespace ArgusBot.Controllers
@@ -18,13 +15,12 @@ namespace ArgusBot.Controllers
     {
         private readonly IGroupSettingsService _groupSettings;
 
-        public HomeController(IConfiguration configuration, IGroupSettingsService groupSettings)
+        public HomeController(IGroupSettingsService groupSettings)
         {
-            Configuration = configuration;
             _groupSettings = groupSettings;
 
         }
-        private IConfiguration Configuration { get; }
+
         [Authorize]
         public IActionResult Index()
         {
