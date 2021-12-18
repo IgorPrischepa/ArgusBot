@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
-
-using ArgusBot.BL.Services.Interfaces;
-
+﻿using ArgusBot.BL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
 namespace ArgusBot.Controllers

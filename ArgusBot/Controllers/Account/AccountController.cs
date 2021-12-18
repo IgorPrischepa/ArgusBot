@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using ArgusBot.BL.Services.Interfaces;
+﻿using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.Models.Account;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ArgusBot.Controllers.Account
 {

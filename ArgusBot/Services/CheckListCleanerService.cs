@@ -1,16 +1,13 @@
-﻿using System;
+﻿using ArgusBot.BL.Services.Interfaces;
+using ArgusBot.DAL.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ArgusBot.BL.Services.Interfaces;
-using ArgusBot.DAL.Models;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 using Telegram.Bot;
 
 namespace ArgusBot.Services.Implementations
