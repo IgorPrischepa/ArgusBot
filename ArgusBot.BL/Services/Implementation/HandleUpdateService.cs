@@ -92,7 +92,6 @@ namespace ArgusBot.BL.Services.Implementation
 
                 var isCapthcaEnabled = await _groupSettings.isCapthcaEnabledAsync(message.Chat.Id);
 
-                //can't understand how it works. З
                 if (isCapthcaEnabled && members.Any())
                 {
                     _logger.LogInformation($"Attempt to join chat {message.Chat.Id}. Initializing a captcha for new users");

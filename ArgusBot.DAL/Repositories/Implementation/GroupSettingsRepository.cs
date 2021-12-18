@@ -39,13 +39,16 @@ namespace ArgusBot.DAL.Repositories.Implementation
             return await db.GroupsSettings.FirstOrDefaultAsync(x => x.TelegramChatId.Equals(groupId));
         }
 
-        public async Task UpdateSettingsGroupAsync(GroupSettings groupSettings)
+        public async Task<bool> UpdateSettingsGroupAsync(GroupSettings groupSettings)
         {
             if (groupSettings != null)
             {
-                await db.GroupsSettings.AddAsync(groupSettings);
+                db.GroupsSettings.Update(groupSettings);
                 await SaveChangesAsync();
+                return true;
             }
+
+            return false;
         }
 
         private async Task SaveChangesAsync() => await db.SaveChangesAsync();

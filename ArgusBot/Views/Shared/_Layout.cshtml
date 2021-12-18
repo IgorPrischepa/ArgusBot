@@ -19,7 +19,7 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <div>
-                        @User.Identity.Name;
+                        <b>@User.Identity.Name</b>
                         <a class="btn" asp-controller="Account" asp-action="Logout">LogOut</a>
                     </div>
                 }

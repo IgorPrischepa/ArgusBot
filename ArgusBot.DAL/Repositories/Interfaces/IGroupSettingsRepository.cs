@@ -8,7 +8,7 @@ namespace ArgusBot.DAL.Repositories.Interfaces
     {
         Task CreateSettingsForNewGroupAsync(int groupId);
 
-        Task UpdateSettingsGroupAsync(GroupSettings groupSettings);
+        Task<bool> UpdateSettingsGroupAsync(GroupSettings groupSettings);
 
         Task<GroupSettings> GetSettingAsync(long groupId);
 

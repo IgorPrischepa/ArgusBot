@@ -2,8 +2,8 @@
 <div class="container">
     @if (Model.Groups != null && !Model.NeedToAttachTelegramAccount)
     {
-        <h3>List of your groups</h3>
-
+        <h3 class="align-content-center">List of your groups</h3>
+        <br>
         <ul class="list-group">
             @if (Model != null)
             {
@@ -13,7 +13,7 @@
                         <p class="mr-auto p-2">@group.Name</p>
                         <div class="d-flex p-2">
                             <div class="form-group">
-                                <a href="@Url.ActionLink("Edit", "Home", new {group.Id})" class="btn btn-outline-secondary  p-2 order-1">
+                                <a href="@Url.ActionLink("Edit", "Home", new {group.Settings.GroupId})" class="btn btn-outline-primary  p-2 order-1">
                                     Settings
                                 </a>
                             </div>
