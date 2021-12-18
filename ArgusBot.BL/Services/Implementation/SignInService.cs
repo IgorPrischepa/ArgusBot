@@ -39,9 +39,9 @@ namespace ArgusBot.BL.Services.Implementation
         public async Task<bool> AuthenticateAsync(string login, string password)
         {
             User user = await _userRepository.GetUserByLoginAsync(login);
-            AddAttachTelegramCookies(user.TelegramId);
             if (user != null)
             {
+                AddAttachTelegramCookies(user.TelegramId);
                 if (BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
                     var newUser = new ProfileDTO() { Login = user.Login, UserGuid = user.UserGuid, TelegramId = user.TelegramId };

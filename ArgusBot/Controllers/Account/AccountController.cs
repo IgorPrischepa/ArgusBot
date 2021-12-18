@@ -37,7 +37,8 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Login()
         {
-            return View(new LoginVM() { RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram" });
+            ViewBag.RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram";
+            return View(new LoginVM());
         }
         [HttpGet]
         public async Task<IActionResult> AttachTelegramAccount()
@@ -81,30 +82,37 @@ namespace ArgusBot.Controllers.Account
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Login(string loginInput, string passwordInput)
+        public async Task<IActionResult> Login([FromForm] LoginVM loginVM)
         {
-            bool isSuccesfull = await _signInService.AuthenticateAsync(loginInput, passwordInput);
-
-            if (!isSuccesfull)
+            ViewBag.RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram";
+            if (ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "Error! The user is not found or the password is incorrect. Please try again.";
+                bool isSuccesfull = await _signInService.AuthenticateAsync(loginVM.Login, loginVM.Password);
 
-                return View();
-            };
+                if (!isSuccesfull)
+                {
+                    ViewBag.ErrorMessage = "Error! The user is not found or the password is incorrect. Please try again.";
 
-            return RedirectToAction("Index", "Home");
+                    return View(loginVM);
+                };
+
+                return RedirectToAction("Index", "Home");
+            }
+            return View(loginVM);
         }
 
         [HttpGet]
         public IActionResult Registration()
         {
-            return View(new RegistrationViewModel() { RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram" });
+            ViewBag.RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram";
+            return View(new RegistrationViewModel());
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Registration(RegistrationViewModel model)
         {
+            ViewBag.RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram";
             if (ModelState.IsValid)
             {
                 bool result = await _userService.CreateNewUserAsync(model.Login, model.Password);
@@ -114,13 +122,12 @@ namespace ArgusBot.Controllers.Account
                     await _signInService.AuthenticateAsync(model.Login, model.Password);
                     return RedirectToAction("Index", "Home");
                 }
-
                 ViewBag.ErrorMessage = "This user already exists. Please use a different name.";
-                return View();
+                return View(model);
             }
 
             ViewBag.ErrorMessage = "Invalid input";
-            return View();
+            return View(model);
         }
 
         public async Task<IActionResult> LogOut()
