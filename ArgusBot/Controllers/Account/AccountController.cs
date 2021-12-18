@@ -39,7 +39,7 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Login()
         {
-            return View(new LoginVM() { RedirectUrl = $"{_configuration["data-auth"]}/Account/LoginByTelegram" });
+            return View(new LoginVM() { RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram" });
         }
         [HttpGet]
         public async Task<IActionResult> AttachTelegramAccount()
@@ -100,7 +100,7 @@ namespace ArgusBot.Controllers.Account
         [HttpGet]
         public IActionResult Registration()
         {
-            return View(new RegistrationViewModel() { RedirectUrl = $"{_configuration["data-auth"]}/Account/LoginByTelegram" });
+            return View(new RegistrationViewModel() { RedirectUrl = $"{_configuration["redirect-url"]}/Account/LoginByTelegram" });
         }
 
         [HttpPost]
