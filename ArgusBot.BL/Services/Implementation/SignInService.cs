@@ -164,9 +164,14 @@ namespace ArgusBot.BL.Services.Implementation
         private void AddAttachTelegramCookies(string telegramId)
         {
             if (string.IsNullOrEmpty(telegramId))
+            {
                 _context.HttpContext.Response.Cookies.Append("attached_telegram", "false");
-            else _context.HttpContext.Response.Cookies.Append("attached_telegram", "true");
-            _context.HttpContext.Response.Cookies.Append("telegram_id", telegramId);
+            }
+            else
+            {
+                _context.HttpContext.Response.Cookies.Append("attached_telegram", "true");
+                _context.HttpContext.Response.Cookies.Append("telegram_id", telegramId);
+            }
         }
     }
 }

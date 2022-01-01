@@ -85,7 +85,6 @@ namespace ArgusBot.BL.Services.Implementation
         {
             return await _groupRepository.GetAllGroupWithAdminsAsync();
         }
-
         public async Task RemoveAdminFromTelegramGroupAsync(long groupId, long userId)
         {
             await _groupRepository.DeleteAdminFromGroupAsync(groupId, userId);

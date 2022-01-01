@@ -22,7 +22,6 @@ namespace ArgusBot.BL.Services.Interfaces
         public Task<Group> GetGroupByIdAsync(long groupId);
 
         public Task<List<Group>> GetGroupsWithAdminsAsync();
-
         public Task RemoveGroupWithAdmins(long groupId);
 
         public Task<bool> Exists(long groupId);

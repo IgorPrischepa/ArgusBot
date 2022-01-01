@@ -24,7 +24,7 @@
             <a href="@Url.ActionLink("Registration", "Account")" class="btn btn-secondary">Register a new account</a>
         </div>
         <div class="col">
-           @await Html.PartialAsync("TelegramBtnPartialView",Model.RedirectUrl)
+           @await Html.PartialAsync("TelegramBtnPartialView", ViewBag.RedirectUrl as string)
         </div>
     </div>
 </div>

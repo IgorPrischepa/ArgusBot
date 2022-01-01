@@ -90,7 +90,7 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 var members = RemoveBotFromNewChatMembers(message.NewChatMembers);
 
-                var isCapthcaEnabled = await _groupSettings.isCapthcaEnabledAsync(message.Chat.Id);
+                var isCapthcaEnabled = await _groupSettings.IsCapthcaEnabledAsync(message.Chat.Id);
 
                 if (isCapthcaEnabled && members.Any())
                 {

@@ -6,7 +6,7 @@ namespace ArgusBot.BL.Services.Interfaces
 {
     public interface IGroupSettingsService
     {
-        Task<bool> isCapthcaEnabledAsync(long groupId);
+        Task<bool> IsCapthcaEnabledAsync(long groupId);
 
         Task<GroupSettingsDTO> GetGroupSettingsAsync(long groupId);
 
