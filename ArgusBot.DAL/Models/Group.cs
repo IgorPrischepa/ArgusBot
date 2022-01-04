@@ -16,5 +16,7 @@ namespace ArgusBot.DAL.Models
         public string GroupName { get; set; }
 
         public List<GroupAdmin> GroupAdmins { get; set; }
+
+        public virtual GroupSettings Settings { get; set; }
     }
 }

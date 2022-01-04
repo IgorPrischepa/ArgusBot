@@ -49,17 +49,25 @@ namespace ArgusBot.Services.Implementations
                 int offset = 0;
                 _logger.LogInformation("Starting processing checklist.");
                 IEnumerable<Check> currentChunk = null;
-                do
+
+                try
                 {
-                    currentChunk = await checkList.GetCheckListWithStatus(StatusTypes.InProgress, 500, offset);
-                    foreach (Check check in currentChunk)
+                    do
                     {
-                        await _botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
-                        await _botClient.KickChatMemberAsync(check.GroupId, check.UserId);
-                        await checkList.DeleteCheckForUser(check.UserId, check.GroupId);
+                        currentChunk = await checkList.GetCheckListWithStatus(StatusTypes.InProgress, 500, offset);
+                        foreach (Check check in currentChunk)
+                        {
+                            await _botClient.DeleteMessageAsync(check.GroupId, check.QuestionMessageId);
+                            await _botClient.KickChatMemberAsync(check.GroupId, check.UserId);
+                            await checkList.DeleteCheckForUser(check.UserId, check.GroupId);
+                        }
                     }
+                    while (!currentChunk.Any());
                 }
-                while (!currentChunk.Any());
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                }
             }
         }
 

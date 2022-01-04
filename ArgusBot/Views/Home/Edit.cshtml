@@ -1,0 +1,41 @@
+﻿@model ArgusBot.BL.DTO.GroupSettingsDTO
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Change settings</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input asp-for="Id" class="form-control" value="@Model.Id" type="hidden" />
+            </div>
+            <div class="form-group">
+                <input asp-for="GroupId" class="form-control" value="@Model.GroupId" type="hidden" />
+            </div>
+            <div class="form-group">
+                <label asp-for="IsCpatchaEnabled" class="control-label">Capthca</label>
+                @{
+                    if (Model.IsCpatchaEnabled)
+                    {
+                        <input asp-for="IsCpatchaEnabled" type="checkbox" checked />
+                    }
+                    else
+                    {
+                        <input asp-for="IsCpatchaEnabled" type="checkbox" />
+                    }
+                }
+                <span asp-validation-for="IsCpatchaEnabled" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-outline-primary" />
+                <a asp-action="Index" class="btn btn-outline-danger">Back</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -5,6 +5,7 @@ using ArgusBot.DAL.Repositories.Implementation;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
 using ArgusBot.Services.Implementations;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Telegram.Bot;
 
 namespace ArgusBot
@@ -50,8 +52,10 @@ namespace ArgusBot
 
             services.AddScoped<ICheckListRepository, CheckListRepository>();
             services.AddScoped<IGroupsRepository, GroupsRepository>();
+            services.AddScoped<IGroupSettingsRepository, GroupSettingsRepository>();
             services.AddScoped<ICheckListService, CheckService>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IGroupSettingsService, GroupSettingsService>();
 
             services.AddScoped<ISignInService, SignInService>().AddLogging(log => log.AddConsole());
             services.AddTransient<IQueryParser, QueryParser>();

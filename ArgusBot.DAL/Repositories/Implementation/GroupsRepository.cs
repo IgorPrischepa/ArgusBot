@@ -1,7 +1,9 @@
 ﻿using ArgusBot.DAL.Models;
 using ArgusBot.DAL.Repositories.Interfaces;
 using ArgusBot.Data;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,13 +40,15 @@ namespace ArgusBot.DAL.Repositories.Implementation
             }
         }
 
-        public async Task AddGroupAsync(Group group)
+        public async Task<Group> AddGroupAsync(Group group)
         {
             if (group is not null)
             {
-                await db.Groups.AddAsync(group);
+                var temp = await db.Groups.AddAsync(group);
                 await SaveChangesAsync();
+                return temp.Entity;
             }
+            return null;
         }
 
         public async Task DeleteAdminFromGroupAsync(long groupId, long userId)
@@ -59,7 +63,7 @@ namespace ArgusBot.DAL.Repositories.Implementation
 
         public async Task DeleteGroupAsync(long groupId)
         {
-            Group group = await GetGroupByIdAsync(groupId);
+            Group group = await GetGroupByIdWithSettingsAsync(groupId);
             db.Groups.Remove(group);
             await SaveChangesAsync();
         }
@@ -85,9 +89,18 @@ namespace ArgusBot.DAL.Repositories.Implementation
             return db.Groups.Include(g => g.GroupAdmins).ToListAsync();
         }
 
-        public async Task<Group> GetGroupByIdAsync(long groupId)
+        public async Task<Group> GetGroupByIdWithSettingsAsync(long groupId)
         {
-            return await db.Groups.SingleOrDefaultAsync(g => g.GroupId.Equals(groupId));
+            return await db.Groups.Include(x => x.Settings)
+                                  .FirstOrDefaultAsync(g => g.GroupId.Equals(groupId));
+        }
+
+        public IEnumerable<Group> GetGroupsForUser(long userId)
+        {
+            return db.Groups.Include(g => g.GroupAdmins)
+                            .Include(g => g.Settings)
+                            .Where(g => g.GroupAdmins.SingleOrDefault(admin => admin.TelegramUserId == userId) != null)
+                            .ToList();
         }
 
         public async Task SaveChangesAsync()

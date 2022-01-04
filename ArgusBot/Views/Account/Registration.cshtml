@@ -29,6 +29,7 @@
         <input class="btn btn-primary" type="submit" value="Complete registration" />
     </div>
     <div class="mt-2">
-        @await Html.PartialAsync("TelegramBtnPartialView",Model.RedirectUrl)
+        @await Html.PartialAsync("TelegramBtnPartialView", ViewBag.RedirectUrl as string)
     </div>
+    <input type="hidden" asp-for="RedirectUrl" value="@ViewBag.RedirectUrl" />
 </form>

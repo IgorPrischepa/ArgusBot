@@ -4,14 +4,16 @@ using ArgusBot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ArgusBot.DAL.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20211216185107_GroupSettings adding")]
+    partial class GroupSettingsadding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +68,12 @@ namespace ArgusBot.DAL.Migrations
                     b.Property<string>("GroupName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("GroupSettingsId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupSettingsId");
 
                     b.ToTable("Groups");
                 });
@@ -98,21 +105,16 @@ namespace ArgusBot.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsCpatchaEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<long>("TelegramChatId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId")
-                        .IsUnique();
-
-                    b.ToTable("GroupsSettings");
+                    b.ToTable("GroupSettings");
                 });
 
             modelBuilder.Entity("ArgusBot.DAL.Models.User", b =>
@@ -150,6 +152,17 @@ namespace ArgusBot.DAL.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ArgusBot.DAL.Models.Group", b =>
+                {
+                    b.HasOne("ArgusBot.DAL.Models.GroupSettings", "Settings")
+                        .WithMany()
+                        .HasForeignKey("GroupSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Settings");
+                });
+
             modelBuilder.Entity("ArgusBot.DAL.Models.GroupAdmin", b =>
                 {
                     b.HasOne("ArgusBot.DAL.Models.Group", "Group")
@@ -161,22 +174,9 @@ namespace ArgusBot.DAL.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("ArgusBot.DAL.Models.GroupSettings", b =>
-                {
-                    b.HasOne("ArgusBot.DAL.Models.Group", "Group")
-                        .WithOne("Settings")
-                        .HasForeignKey("ArgusBot.DAL.Models.GroupSettings", "GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-                });
-
             modelBuilder.Entity("ArgusBot.DAL.Models.Group", b =>
                 {
                     b.Navigation("GroupAdmins");
-
-                    b.Navigation("Settings");
                 });
 #pragma warning restore 612, 618
         }

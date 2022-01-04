@@ -1,10 +1,13 @@
 ﻿using ArgusBot.BL.Services.Interfaces;
 using ArgusBot.DAL.Models;
+
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -24,7 +27,7 @@ namespace ArgusBot.BL.Services.Implementation
         public async Task InitiateCaptchaProcess(IEnumerable<Telegram.Bot.Types.User> newUsers, long groupId)
         {
             newUsers.VerifyNotNull();
-            if (newUsers.Count() != 0)
+            if (newUsers.Any())
             {
                 foreach (var user in newUsers)
                 {

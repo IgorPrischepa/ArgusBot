@@ -1,4 +1,5 @@
 ﻿using ArgusBot.DAL.Models;
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,10 +15,15 @@ namespace ArgusBot.BL.Services.Interfaces
 
         public Task RemoveAdminFromTelegramGroupAsync(long groupId, long userId);
 
+        public IEnumerable<Group> GetGroupsForCurrentAdmin(long userId);
+
         public Task<List<Group>> GetAllGroupsAsync();
+
+        public Task<Group> GetGroupByIdAsync(long groupId);
 
         public Task<List<Group>> GetGroupsWithAdminsAsync();
         public Task RemoveGroupWithAdmins(long groupId);
+
         public Task<bool> Exists(long groupId);
     }
 }

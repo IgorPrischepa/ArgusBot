@@ -1,5 +1,6 @@
 ﻿using ArgusBot.BL.Services;
 using ArgusBot.Models.Components;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -14,7 +15,7 @@ namespace ArgusBot.ViewCompomemts
         }
         public IViewComponentResult Invoke()
         {
-            var redirectUrl = _configuration["data-auth"];
+            var redirectUrl = _configuration["redirect-url"];
             if (HttpContext.Request.Cookies.ContainsKey("identifier"))
             {
                 if (HttpContext.Request.Cookies.TryGetValue("attached_telegram", out string value))

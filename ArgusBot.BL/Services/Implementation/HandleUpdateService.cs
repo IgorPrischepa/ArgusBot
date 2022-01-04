@@ -1,10 +1,13 @@
 ﻿using ArgusBot.BL.Services.Interfaces;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
@@ -20,8 +23,9 @@ namespace ArgusBot.BL.Services.Implementation
         private readonly IGroupService _groupService;
         private readonly ICheckListService _checkListService;
         private readonly IConfiguration _config;
+        private readonly IGroupSettingsService _groupSettings;
 
-        public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger, ICaptchaService captchaService, IGroupService groupService, ICheckListService checkListService, IConfiguration config)
+        public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger, ICaptchaService captchaService, IGroupService groupService, ICheckListService checkListService, IGroupSettingsService groupSettings, IConfiguration config)
         {
             _botClient = botClient;
             _logger = logger;
@@ -29,6 +33,7 @@ namespace ArgusBot.BL.Services.Implementation
             _groupService = groupService;
             _checkListService = checkListService;
             _config = config;
+            _groupSettings = groupSettings;
         }
 
         public async Task EchoAsync(Update update)
@@ -80,24 +85,36 @@ namespace ArgusBot.BL.Services.Implementation
             {
                 return;
             }
+
             if (message.NewChatMembers != null && message.Type == MessageType.ChatMembersAdded)
             {
                 var members = RemoveBotFromNewChatMembers(message.NewChatMembers);
-                if (members.Count() > 0)
+
+                var isCapthcaEnabled = await _groupSettings.IsCapthcaEnabledAsync(message.Chat.Id);
+
+                if (isCapthcaEnabled && members.Any())
                 {
                     _logger.LogInformation($"Attempt to join chat {message.Chat.Id}. Initializing a captcha for new users");
+
                     await _captchaService.InitiateCaptchaProcess(message.NewChatMembers, message.Chat.Id);
                 }
             }
+
             if (message.Type == MessageType.ChatMemberLeft)
             {
                 await _checkListService.DeleteCheckForUser(message.LeftChatMember.Id, message.Chat.Id);
+
                 _logger.LogInformation($"Captcha data for this user was removed");
             }
+
             await _captchaService.ProcessMesagge(message);
+
             _logger.LogInformation("Receive message type: {messageType}", message.Type);
+
             if (message.Type != MessageType.Text)
+            {
                 return;
+            }
 
             await _botClient.SendTextMessageAsync(message.Chat.Id, message.Text);
         }
@@ -128,6 +145,7 @@ namespace ArgusBot.BL.Services.Implementation
         private async Task CheckAdmins(ChatMemberUpdated myChatMember)
         {
             _logger.LogInformation($"bot is checking admins from {myChatMember.Chat.Id} group");
+
             var adminsFromTlg = await _botClient.GetChatAdministratorsAsync(myChatMember.Chat.Id);
             foreach (var admin in adminsFromTlg)
             {
@@ -142,6 +160,7 @@ namespace ArgusBot.BL.Services.Implementation
         private async Task OnBotWasRemoved(ChatMemberUpdated chatMemberUpdated)
         {
             _logger.LogInformation($"User {chatMemberUpdated.NewChatMember.User.Id} was removed from the group");
+
             await _groupService.RemoveGroupWithAdmins(chatMemberUpdated.Chat.Id);
         }
     }
